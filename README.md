@@ -10,21 +10,25 @@ Usage
 
 This tool does not try to be clever, it simply maps any parameter for restic to a key in an INI file. I.e. backing up your home directory with a password and an exclude-file
 
-    restic backup --password-file /home/me/.config/restic/password --exclude-file /home/me/.config/restic/excludes --repo sftp:your_server:my_computer.restic /home/me
+    restic backup \
+        --password-file ~/.config/restic/password \
+        --exclude-file ~/.config/restic/excludes \
+        --repo sftp:your_server:my_computer.restic \
+        ~
 
 becomes
 
-    [home]          # <- this is a preset `home`
-    password-file: /home/me/.config/restic/password
+    crestic home backup
+
+after creating a config file like
+
+    [home]
+    password-file: ~/.config/restic/password
     repo: sftp:your_server:my_computer.restic
 
-    [home.backup]   # <- this is for the command `backup` in the preset `home`
-    exclude-file: /home/me/.config/restic/excludes
-    params: /home/me
-
-and then a simple call to
-
-    crestic home backup
+    [home.backup]
+    exclude-file: ~/.config/restic/excludes
+    params: ~
 
 See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more complicated example with multiple repos and directories.
 
