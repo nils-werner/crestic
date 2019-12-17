@@ -8,7 +8,7 @@ Why? [Because restic is unfortunately still missing config files](https://github
 Usage
 -----
 
-This tool does not try to be clever, it simply maps any parameter for restic to a key in an INI file. I.e. backing up your home directory with a password and an exclude-file
+This tool does not try to be clever, it simply maps any commandline arguments for restic to a key in an INI file. I.e. backing up your home directory with a password and an exclude-file
 
     restic backup \
         --repo sftp:your_server:my_computer.restic \
@@ -22,10 +22,12 @@ becomes
 
 after creating a config file like
 
+    # these are the parameters for any `crestic home` command
     [home]
     repo: sftp:your_server:my_computer.restic
     password-file: ~/.config/restic/password
 
+    # these are the parameters for the `crestic home backup` command
     [home.backup]
     exclude-file: ~/.config/restic/excludes
     params: ~
