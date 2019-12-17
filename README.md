@@ -34,6 +34,7 @@ Installation
 Just place `crestic` in your `$PATH` and set the environment variable `$CRESTIC_CONFIG_FILE`, i.e.
 
     curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic --output ~/.local/bin/crestic
+    chmod +x ~/.local/bin/crestic
     echo "export CRESTIC_CONFIG_FILE=~/.config/restic/crestic.ini" >> .bashrc
 
 Requirements

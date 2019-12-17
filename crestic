@@ -24,8 +24,6 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.optionxform = str  # dont map config keys to lower case
     config.read(os.path.expanduser(os.environ['CRESTIC_CONFIG_FILE']))
-    print(os.environ['CRESTIC_CONFIG_FILE'])
-    print(config.sections())
 
     sections = [
         "global",
