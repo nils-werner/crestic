@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import pathlib
+import argparse
+import subprocess
+import configparser
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("preset", nargs="?")
+    parser.add_argument("command", help="the restic command")
+
+    for arg in sys.argv[1:]:
+        if arg.startswith(("-", "--")):
+            parser.add_argument(arg)
+    parser.add_argument(
+        "params", nargs="*", help="parameters for the restic command"
+    )
+    python_args = parser.parse_args(sys.argv[1:])
+
+    config = configparser.ConfigParser()
+    config.optionxform = str  # dont map config keys to lower case
+    config.read(os.path.expanduser(os.environ['CRESTIC_CONFIG_FILE']))
+    print(os.environ['CRESTIC_CONFIG_FILE'])
+    print(config.sections())
+
+    sections = [
+        "global",
+        f"global.{python_args.command}",
+    ]
+    if python_args.preset is not None:
+        sections += [
+            f"{python_args.preset}",
+            f"{python_args.preset}.{python_args.command}",
+        ]
+
+    # Load restic --parameters from config, in ascending precedence
+    restic_params = python_args.params
+    restic_options = {}
+    for section in sections:
+        try:
+            restic_options.update(**dict(config[section]))
+            try:
+                if not restic_params:
+                    restic_params = config[section]['params'].split()
+            except KeyError:
+                pass
+        except KeyError:
+            pass
+
+    # Load restic environment variables from config, in ascending precedence
+    restic_environ = os.environ
+    for section in sections:
+        try:
+            restic_environ.update(**dict(config[f"{section}.environ"]))
+        except KeyError:
+            pass
+
+    try:
+        del restic_options['params']
+    except KeyError:
+        pass
+
+    # Override config --parameters with --parameters from CLI
+    python_args_dict = dict(vars(python_args))
+    del python_args_dict['preset']
+    del python_args_dict['command']
+    del python_args_dict['params']
+    restic_options.update(python_args_dict)
+
+    # Construct command
+    argstring = ["restic", f"{python_args.command}"]
+    for key, value in restic_options.items():
+        argstring += [f"--{key}", f"{value}"]
+    argstring += restic_params
+
+    if os.environ.get("CRESTIC_DRYRUN", False):
+        argstring.insert(0, "echo")
+
+    subprocess.call(argstring, env=restic_environ)
