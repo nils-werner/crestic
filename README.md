@@ -1,5 +1,5 @@
-Crestic -- Configurable Restic
-==============================
+Crestic - configurable Restic
+=============================
 
 This is a slim configuration wrapper for [Restic](https://restic.readthedocs.io/), a pretty awesome backup tool.
 
@@ -11,9 +11,9 @@ Usage
 This tool does not try to be clever, it simply maps any parameter for restic to a key in an INI file. I.e. backing up your home directory with a password and an exclude-file
 
     restic backup \
+        --repo sftp:your_server:my_computer.restic \
         --password-file ~/.config/restic/password \
         --exclude-file ~/.config/restic/excludes \
-        --repo sftp:your_server:my_computer.restic \
         ~
 
 becomes
@@ -23,14 +23,14 @@ becomes
 after creating a config file like
 
     [home]
-    password-file: ~/.config/restic/password
     repo: sftp:your_server:my_computer.restic
+    password-file: ~/.config/restic/password
 
     [home.backup]
     exclude-file: ~/.config/restic/excludes
     params: ~
 
-See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more complicated example with multiple repos and directories.
+See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more complicated example with multiple repos and directories and forgetting rules.
 
 Installation
 ------------
@@ -44,7 +44,7 @@ Just place `crestic` in your `$PATH` and set the environment variable `$CRESTIC_
 Requirements
 ------------
 
-Python 3 on a UNIX system.
+Plain Python 3 on a UNIX system. Nothing else.
 
 Debugging
 ---------
