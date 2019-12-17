@@ -51,4 +51,10 @@ Plain Python 3 on a UNIX system. Nothing else.
 Debugging
 ---------
 
-If you set the environment variable `$CRESTIC_DRYRUN`, `crestic` will output the final command instead of running it.
+If you set the environment variable `$CRESTIC_DRYRUN`, `crestic` will output the final command instead of running it. I.e.
+
+    env CRESTIC_DRYRUN=1 crestic home backup
+
+will print
+
+    restic backup --repo sftp:your_server:my_computer.restic --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes ~
