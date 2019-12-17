@@ -9,13 +9,13 @@ import configparser
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?")
     parser.add_argument("command", help="the restic command")
 
     for arg in sys.argv[1:]:
         if arg.startswith(("-", "--")):
-            parser.add_argument(arg)
+            parser.add_argument(arg, nargs='?')
     parser.add_argument(
         "params", nargs="*", help="parameters for the restic command"
     )
@@ -72,7 +72,10 @@ if __name__ == "__main__":
     # Construct command
     argstring = ["restic", f"{python_args.command}"]
     for key, value in restic_options.items():
-        argstring += [f"--{key}", f"{value}"]
+        if len(key) == 1:
+            argstring += [f"-{key}", f"{value}"]
+        else:
+            argstring += [f"--{key}", f"{value}"]
     argstring += restic_params
 
     if os.environ.get("CRESTIC_DRYRUN", False):
