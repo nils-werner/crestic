@@ -83,4 +83,9 @@ if __name__ == "__main__":
     if os.environ.get("CRESTIC_DRYRUN", False):
         print(argstring)
     else:
-        subprocess.call(" ".join(argstring), env=restic_environ, shell=True)
+        try:
+            sys.exit(
+                subprocess.call(" ".join(argstring), env=restic_environ, shell=True)
+            )
+        except KeyboardInterrupt:
+            sys.exit(130)
