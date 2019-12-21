@@ -16,8 +16,9 @@ if __name__ == "__main__":
     for arg in sys.argv[1:]:
         if arg.startswith(("-", "--")) and arg != "--":
             parser.add_argument(arg, nargs='?')
+
     parser.add_argument(
-        "params", nargs="*", help="parameters for the restic command"
+        "arguments", nargs="*", help="positional arguments for the restic command"
     )
     python_args = parser.parse_args(sys.argv[1:])
 
@@ -36,14 +37,14 @@ if __name__ == "__main__":
         ]
 
     # Load restic --parameters from config, in ascending precedence
-    restic_params = python_args.params
+    restic_arguments = python_args.arguments
     restic_options = {}
     for section in sections:
         try:
             restic_options.update(**dict(config[section]))
             try:
-                if not restic_params:
-                    restic_params = config[section]['params'].split()
+                if not restic_arguments:
+                    restic_arguments = config[section]['arguments'].split()
             except KeyError:
                 pass
         except KeyError:
@@ -58,15 +59,15 @@ if __name__ == "__main__":
             pass
 
     try:
-        del restic_options['params']
+        del restic_options['arguments']
     except KeyError:
         pass
 
-    # Override config --parameters with --parameters from CLI
+    # Override config options with --options from CLI
     python_args_dict = dict(vars(python_args))
     del python_args_dict['preset']
     del python_args_dict['command']
-    del python_args_dict['params']
+    del python_args_dict['arguments']
     restic_options.update(python_args_dict)
 
     # Construct command
@@ -78,7 +79,7 @@ if __name__ == "__main__":
             argstring.append(f"--{key}")
         if value is not None:
             argstring.append(f"{value}")
-    argstring += restic_params
+    argstring += restic_arguments
 
     if os.environ.get("CRESTIC_DRYRUN", False):
         print(argstring)
