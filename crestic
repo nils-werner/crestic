@@ -50,7 +50,7 @@ if __name__ == "__main__":
             pass
 
     # Load restic environment variables from config, in ascending precedence
-    restic_environ = os.environ
+    restic_environ = dict(os.environ)
     for section in sections:
         try:
             restic_environ.update(**dict(config[f"{section}.environ"]))
