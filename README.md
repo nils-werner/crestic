@@ -10,29 +10,35 @@ Usage
 
 This tool does not try to be clever, it simply maps any commandline options for restic to a key in an INI file. I.e. backing up your home directory with a password and an exclude-file
 
-    restic backup \
-        --repo sftp:your_server:my_computer.restic \
-        --password-file ~/.config/restic/password \
-        --exclude-file ~/.config/restic/excludes \
-        ~
+```Shell
+restic backup \
+    --repo sftp:your_server:my_computer.restic \
+    --password-file ~/.config/restic/password \
+    --exclude-file ~/.config/restic/excludes \
+    ~
+```
 
 becomes
 
-    crestic home backup
+```Shell
+crestic home backup
+```
 
 after creating a config file like
 
-    # these are the options for any `crestic home` command
-    [home]
-    repo: sftp:your_server:my_computer.restic
-    password-file: ~/.config/restic/password
+```INI
+# these are the options for any `crestic home` command
+[home]
+repo: sftp:your_server:my_computer.restic
+password-file: ~/.config/restic/password
 
-    # these are the options for the `crestic home backup` command
-    # `arguments` are positional arguments that are appended at the end of the
-    # commandline. Restic expects the list of directories here.
-    [home.backup]
-    exclude-file: ~/.config/restic/excludes
-    arguments: ~
+# these are the options for the `crestic home backup` command
+# `arguments` are positional arguments that are appended at the end of the
+# commandline. Restic expects the list of directories here.
+[home.backup]
+exclude-file: ~/.config/restic/excludes
+arguments: ~
+```
 
 See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more complicated example with multiple repos and directories and forgetting rules.
 
@@ -41,9 +47,11 @@ Installation
 
 Just place `crestic` in your `$PATH` and set the environment variable `$CRESTIC_CONFIG_FILE`, i.e.
 
-    curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic --output ~/.local/bin/crestic
-    chmod +x ~/.local/bin/crestic
-    echo "export CRESTIC_CONFIG_FILE=~/.config/restic/crestic.ini" >> .bashrc
+```Shell
+curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic --output ~/.local/bin/crestic
+chmod +x ~/.local/bin/crestic
+echo "export CRESTIC_CONFIG_FILE=~/.config/restic/crestic.ini" >> .bashrc
+```
 
 Requirements
 ------------
@@ -55,8 +63,12 @@ Debugging
 
 If you set the environment variable `$CRESTIC_DRYRUN`, `crestic` will output the final command instead of running it. I.e.
 
-    env CRESTIC_DRYRUN=1 crestic home backup
+```Shell
+env CRESTIC_DRYRUN=1 crestic home backup
+```
 
 will print
 
-    restic backup --repo sftp:your_server:my_computer.restic --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes ~
+```Shell
+restic backup --repo sftp:your_server:my_computer.restic --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes ~
+```
