@@ -83,7 +83,7 @@ def main():
     argstring += restic_arguments
 
     if os.environ.get("CRESTIC_DRYRUN", False):
-        print(argstring)
+        print(" ".join(argstring))
     else:
         try:
             sys.exit(
