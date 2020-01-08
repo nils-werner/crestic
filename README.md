@@ -45,11 +45,22 @@ See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more co
 Installation
 ------------
 
-Just place `crestic` in your `$PATH` and set the environment variable `$CRESTIC_CONFIG_FILE`, i.e.
+Just install it using `pip`
 
 ```Shell
-curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic --output ~/.local/bin/crestic
+pip install git+https://github.com/nils-werner/crestic.git
+```
+
+or download `crestic` into your `$PATH`
+
+```Shell
+curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic/__init__.py --output ~/.local/bin/crestic
 chmod +x ~/.local/bin/crestic
+```
+
+and set the environment variable `$CRESTIC_CONFIG_FILE`, i.e.
+
+```Shell
 echo "export CRESTIC_CONFIG_FILE=~/.config/restic/crestic.ini" >> .bashrc
 ```
 

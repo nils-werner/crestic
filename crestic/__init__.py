@@ -8,7 +8,7 @@ import subprocess
 import configparser
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?")
     parser.add_argument("command", help="the restic command")
@@ -91,3 +91,7 @@ if __name__ == "__main__":
             )
         except KeyboardInterrupt:
             sys.exit(130)
+
+
+if __name__ == "__main__":
+    main()
