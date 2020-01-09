@@ -54,7 +54,7 @@ pip install git+https://github.com/nils-werner/crestic.git
 or download `crestic` into your `$PATH`
 
 ```Shell
-curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic/__init__.py --output ~/.local/bin/crestic
+curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic.py --output ~/.local/bin/crestic
 chmod +x ~/.local/bin/crestic
 ```
 
