@@ -79,15 +79,18 @@ def main():
     del python_args_dict['arguments']
     restic_options.update(python_args_dict)
 
+    restic_options = {k: v.splitlines() for k, v in restic_options.items()}
+
     # Construct command
     argstring = ["restic", f"{python_args.command}"]
-    for key, value in restic_options.items():
-        if len(key) == 1:
-            argstring.append(f"-{key}")
-        else:
-            argstring.append(f"--{key}")
-        if value is not None:
-            argstring.append(f"{value}")
+    for key, lines in restic_options.items():
+        for value in lines:
+            if len(key) == 1:
+                argstring.append(f"-{key}")
+            else:
+                argstring.append(f"--{key}")
+            if value is not None:
+                argstring.append(f"{value}")
     argstring += restic_arguments
 
     if os.environ.get("CRESTIC_DRYRUN", False):
