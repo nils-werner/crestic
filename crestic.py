@@ -26,6 +26,8 @@ def main():
 
     config = configparser.ConfigParser()
     config.optionxform = str  # dont map config keys to lower case
+    with open(os.environ['CRESTIC_CONFIG_FILE']):
+        pass    # config.read() doesn't check exists and readable
     config.read(os.environ['CRESTIC_CONFIG_FILE'])
 
     sections = [
