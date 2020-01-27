@@ -6,6 +6,7 @@ import pathlib
 import argparse
 import subprocess
 import configparser
+import shlex
 
 
 def main():
@@ -56,6 +57,11 @@ def main():
     # Override config arguments with arguments from CLI
     if python_args.arguments:
         restic_options['arguments'] = python_args.arguments
+    elif restic_options.get('arguments'):
+        # convert to list
+        args = shlex.split(restic_options['arguments'])
+        # quote elements if needed
+        restic_options['arguments'] = [shlex.quote(arg) for arg in args]
 
     # Extract positional arguments from options dict
     try:
