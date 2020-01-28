@@ -53,6 +53,8 @@ def main():
         except KeyError:
             pass
 
+    restic_options = {k: v.splitlines() for k, v in restic_options.items()}
+
     # Override config arguments with arguments from CLI
     if python_args.arguments:
         restic_options['arguments'] = python_args.arguments
@@ -70,8 +72,6 @@ def main():
     del python_args_dict['command']
     del python_args_dict['arguments']
     restic_options.update(python_args_dict)
-
-    restic_options = {k: v.splitlines() for k, v in restic_options.items()}
 
     # Construct command
     argstring = ["restic", f"{python_args.command}"]
