@@ -54,7 +54,7 @@ def main(argv):
             pass
 
     restic_options = {
-        k: v.splitlines() if v is not None else []
+        k: v.splitlines() if v != "" else [""]
         for k, v in restic_options.items()
     }
 
@@ -75,7 +75,7 @@ def main(argv):
     del python_args_dict['command']
     del python_args_dict['arguments']
     python_args_dict = {
-        k: v.splitlines() if v is not None else []
+        k: v.splitlines() if v is not None else [""]
         for k, v in python_args_dict.items()
     }
     restic_options.update(python_args_dict)
