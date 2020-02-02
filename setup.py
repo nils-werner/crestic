@@ -11,7 +11,7 @@ setup(
     py_modules=['crestic'],
     entry_points={
         'console_scripts': [
-            'crestic = crestic:main',
+            'crestic = crestic:cli',
         ]
     },
     extras_require={
