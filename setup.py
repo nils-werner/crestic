@@ -14,4 +14,7 @@ setup(
             'crestic = crestic:main',
         ]
     },
+    extras_require={
+        'tests': ['pytest'],
+    },
 )

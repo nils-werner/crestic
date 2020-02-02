@@ -8,20 +8,20 @@ import subprocess
 import configparser
 
 
-def main():
+def main(argv):
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?")
     parser.add_argument("command", help="the restic command")
 
     # CLI options that override values given in config file
-    for arg in sys.argv[1:]:
+    for arg in argv:
         if arg.startswith(("-", "--")) and arg != "--":
             parser.add_argument(arg, nargs='?')
 
     parser.add_argument(
         "arguments", nargs="*", help="positional arguments for the restic command"
     )
-    python_args = parser.parse_args(sys.argv[1:])
+    python_args = parser.parse_args(argv)
 
     config = configparser.ConfigParser()
     config.optionxform = str  # dont map config keys to lower case
@@ -97,4 +97,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
