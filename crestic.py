@@ -93,6 +93,8 @@ def main(argv):
                     argstring.append(f"{value}")
     argstring += restic_arguments
 
+    argstring = [val for val in argstring if val != ""]
+
     if os.environ.get("CRESTIC_DRYRUN", False):
         print(" ".join(argstring))
     else:
