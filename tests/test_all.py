@@ -1,15 +1,12 @@
 import os
 import io
-import sys
 import pytest
 import crestic
 
 
 @pytest.fixture
-def stdout(monkeypatch):
-    mock_stdout = io.StringIO()
-    monkeypatch.setattr(sys, 'stdout', mock_stdout)
-    return lambda: mock_stdout.getvalue().strip()
+def stdout(capsys):
+    return lambda: capsys.readouterr().out.rstrip("\n")
 
 
 @pytest.fixture(autouse=True)
