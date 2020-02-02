@@ -76,13 +76,14 @@ def main(argv):
     # Construct command
     argstring = ["restic", f"{python_args.command}"]
     for key, lines in restic_options.items():
-        for value in lines:
-            if len(key) == 1:
-                argstring.append(f"-{key}")
-            else:
-                argstring.append(f"--{key}")
-            if value is not None:
-                argstring.append(f"{value}")
+        if lines is not None:
+            for value in lines:
+                if len(key) == 1:
+                    argstring.append(f"-{key}")
+                else:
+                    argstring.append(f"--{key}")
+                if value is not None:
+                    argstring.append(f"{value}")
     argstring += restic_arguments
 
     if os.environ.get("CRESTIC_DRYRUN", False):
