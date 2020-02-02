@@ -53,7 +53,10 @@ def main(argv):
         except KeyError:
             pass
 
-    restic_options = {k: v.splitlines() for k, v in restic_options.items()}
+    restic_options = {
+        k: v.splitlines() if v is not None else []
+        for k, v in restic_options.items()
+    }
 
     # Override config arguments with arguments from CLI
     if python_args.arguments:
@@ -71,6 +74,10 @@ def main(argv):
     del python_args_dict['preset']
     del python_args_dict['command']
     del python_args_dict['arguments']
+    python_args_dict = {
+        k: v.splitlines() if v is not None else []
+        for k, v in python_args_dict.items()
+    }
     restic_options.update(python_args_dict)
 
     # Construct command
