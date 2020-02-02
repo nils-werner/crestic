@@ -16,7 +16,7 @@ def main(argv):
     # CLI options that override values given in config file
     for arg in argv:
         if arg.startswith(("-", "--")) and arg != "--":
-            parser.add_argument(arg, nargs='?')
+            parser.add_argument(arg, nargs='?', dest=arg.lstrip("-"))
 
     parser.add_argument(
         "arguments", nargs="*", help="positional arguments for the restic command"
