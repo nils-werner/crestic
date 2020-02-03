@@ -15,6 +15,10 @@ setup(
         ]
     },
     extras_require={
-        'tests': ['pytest'],
+        'tests': [
+            'pytest',
+            'pytest-cov',
+            'pytest-pycodestyle',
+        ],
     },
 )
