@@ -78,3 +78,19 @@ def test_extraargs():
         env=os.environ,
         shell=True
     )
+
+
+def test_environ():
+    crestic.main(["environ", "backup"])
+
+    environ = dict(os.environ)
+    environ.update({
+        'B2_ACCOUNT_ID': 'testid',
+        'B2_ACCOUNT_KEY': 'testkey',
+    })
+
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file bla ~',
+        env=environ,
+        shell=True
+    )
