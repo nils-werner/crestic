@@ -18,6 +18,7 @@ setup(
         'tests': [
             'pytest',
             'pytest-cov',
+            'pytest-mock',
             'pytest-pycodestyle',
         ],
     },

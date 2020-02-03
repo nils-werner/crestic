@@ -1,18 +1,15 @@
 import os
 import io
+import subprocess
+
 import pytest
 import crestic
 
 
-@pytest.fixture
-def stdout(capsys):
-    return lambda: capsys.readouterr().out.rstrip("\n")
-
-
 @pytest.fixture(autouse=True)
-def dryrun(monkeypatch):
-    monkeypatch.setitem(os.environ, 'CRESTIC_DRYRUN', '1')
-    monkeypatch
+def dryrun(mocker):
+    mocker.patch('subprocess.call')
+    mocker.patch('sys.exit')
 
 
 @pytest.fixture(autouse=True)
@@ -20,36 +17,64 @@ def configfile(monkeypatch):
     monkeypatch.setitem(os.environ, 'CRESTIC_CONFIG_FILE', 'tests/config.ini')
 
 
-def test_plain(stdout):
+def test_plain():
     crestic.main(["plain", "backup"])
-    assert stdout() == 'restic backup --exclude-file bla ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file bla ~',
+        env=os.environ,
+        shell=True
+    )
 
 
-def test_boolean(stdout):
+def test_boolean():
     crestic.main(["boolean", "backup"])
-    assert stdout() == 'restic backup --exclude-file bla --quiet ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file bla --quiet ~',
+        env=os.environ,
+        shell=True
+    )
 
 
-def test_multivals(stdout):
+def test_multivals():
     crestic.main(["multivals", "backup"])
-    assert stdout() == 'restic backup --exclude-file bla --exclude config.py --exclude passwords.txt ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file bla --exclude config.py --exclude passwords.txt ~',
+        env=os.environ,
+        shell=True
+    )
 
 
-def test_overloaded(stdout):
+def test_overloaded():
     crestic.main(["overloaded", "backup"])
-    assert stdout() == 'restic backup --exclude-file overloaded ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file overloaded ~',
+        env=os.environ,
+        shell=True
+    )
 
 
-def test_overloaded2(stdout):
+def test_overloaded2():
     crestic.main(["overloaded2", "backup"])
-    assert stdout() == 'restic backup --exclude-file overloaded2 ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file overloaded2 ~',
+        env=os.environ,
+        shell=True
+    )
 
 
-def test_overloadedargs(stdout):
+def test_overloadedargs():
     crestic.main(["plain", "backup", "--exclude-file", "foo"])
-    assert stdout() == 'restic backup --exclude-file foo ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file foo ~',
+        env=os.environ,
+        shell=True
+    )
 
 
-def test_extraargs(stdout):
+def test_extraargs():
     crestic.main(["plain", "backup", "--quiet"])
-    assert stdout() == 'restic backup --exclude-file bla --quiet ~'
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file bla --quiet ~',
+        env=os.environ,
+        shell=True
+    )
