@@ -67,7 +67,7 @@ echo "export CRESTIC_CONFIG_FILE=~/.config/restic/crestic.ini" >> .bashrc
 Requirements
 ------------
 
-Plain Python 3 on a UNIX system. Nothing else.
+Plain Python 3.6+ on a UNIX system. Nothing else.
 
 Debugging
 ---------
