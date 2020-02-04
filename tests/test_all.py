@@ -25,10 +25,19 @@ def configfile(monkeypatch):
     monkeypatch.setitem(os.environ, 'CRESTIC_CONFIG_FILE', 'tests/config.ini')
 
 
-def test_plain():
+def test_plain_backup():
     crestic.main(["plain", "backup"])
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file bla ~',
+        env=os.environ,
+        shell=True
+    )
+
+
+def test_plain_forget():
+    crestic.main(["plain", "forget"])
+    subprocess.call.assert_called_once_with(
+        'restic forget --exclude-file bla',
         env=os.environ,
         shell=True
     )
