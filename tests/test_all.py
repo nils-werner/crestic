@@ -1,15 +1,23 @@
 import os
 import io
+import sys
 import subprocess
 
 import pytest
 import crestic
 
+import builtins
+
 
 @pytest.fixture(autouse=True)
-def dryrun(mocker):
+def mock_call(mocker):
     mocker.patch('subprocess.call')
     mocker.patch('sys.exit')
+
+
+@pytest.fixture
+def mock_print(mocker):
+    mocker.patch('builtins.print')
 
 
 @pytest.fixture(autouse=True)
@@ -94,3 +102,15 @@ def test_environ():
         env=environ,
         shell=True
     )
+
+
+def test_dryrun(mock_print):
+    os.environ['CRESTIC_DRYRUN'] = "1"
+
+    crestic.main(["environ", "backup"])
+
+    subprocess.call.assert_not_called()
+    builtins.print.assert_called_with(
+        'restic backup --exclude-file bla ~'
+    )
+    sys.exit.assert_called_once_with(1)

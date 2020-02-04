@@ -95,7 +95,9 @@ def main(argv):
     argstring = [val for val in argstring if val != ""]
 
     if os.environ.get("CRESTIC_DRYRUN", False):
+        print("Warning: Executing in debug mode. restic will not run, backups are not touched!")
         print(" ".join(argstring))
+        sys.exit(1)
     else:
         try:
             sys.exit(
