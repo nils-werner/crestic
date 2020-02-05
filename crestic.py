@@ -7,7 +7,16 @@ import subprocess
 import configparser
 
 
-def main(argv):
+def main(argv, environ=None, conffile=None, dryrun=None):
+    if environ is None:
+        environ = os.environ
+
+    if conffile is None:
+        conffile = environ['CRESTIC_CONFIG_FILE']
+
+    if dryrun is None:
+        dryrun = environ.get("CRESTIC_DRYRUN", False)
+
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?")
     parser.add_argument("command", help="the restic command")
@@ -24,7 +33,7 @@ def main(argv):
 
     config = configparser.ConfigParser()
     config.optionxform = str  # dont map config keys to lower case
-    config.read(os.environ['CRESTIC_CONFIG_FILE'])
+    config.read(conffile)
 
     sections = [
         "global",
@@ -45,7 +54,7 @@ def main(argv):
             pass
 
     # Load restic environment variables from config, in ascending precedence
-    restic_environ = dict(os.environ)
+    restic_environ = dict(environ)
     for section in sections:
         try:
             restic_environ.update(**dict(config[f"{section}.environ"]))
@@ -94,17 +103,15 @@ def main(argv):
 
     argstring = [val for val in argstring if val != ""]
 
-    if os.environ.get("CRESTIC_DRYRUN", False):
+    if dryrun:
         print("Warning: Executing in debug mode. restic will not run, backups are not touched!")
         print(" ".join(argstring))
-        sys.exit(1)
+        return 1
     else:
         try:
-            sys.exit(
-                subprocess.call(" ".join(argstring), env=restic_environ, shell=True)
-            )
+            return subprocess.call(" ".join(argstring), env=restic_environ, shell=True)
         except KeyboardInterrupt:
-            sys.exit(130)
+            return 130
 
 
 def cli():
@@ -112,4 +119,4 @@ def cli():
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    sys.exit(main(sys.argv[1:]))

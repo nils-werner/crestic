@@ -10,9 +10,13 @@ import builtins
 
 
 @pytest.fixture(autouse=True)
+def clean_env(monkeypatch):
+    monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_FILE')
+
+
+@pytest.fixture(autouse=True)
 def mock_call(mocker):
     mocker.patch('subprocess.call')
-    mocker.patch('sys.exit')
 
 
 @pytest.fixture
@@ -20,13 +24,36 @@ def mock_print(mocker):
     mocker.patch('builtins.print')
 
 
-@pytest.fixture(autouse=True)
-def configfile(monkeypatch):
-    monkeypatch.setitem(os.environ, 'CRESTIC_CONFIG_FILE', 'tests/config.ini')
+@pytest.fixture(params=[True, False])
+def conffile(monkeypatch, request):
+    val = 'tests/config.ini'
+
+    if request.param:
+        monkeypatch.setitem(os.environ, 'CRESTIC_CONFIG_FILE', val)
+        return None
+    else:
+        return val
 
 
-def test_plain_backup():
-    crestic.main(["plain", "backup"])
+@pytest.fixture(params=[True, False])
+def dryrun(monkeypatch, request):
+    if request.param:
+        monkeypatch.setitem(os.environ, 'CRESTIC_DRYRUN', "1")
+        return None
+    else:
+        return True
+
+
+@pytest.fixture(params=[True, False])
+def environ(monkeypatch, request):
+    if request.param:
+        return None
+    else:
+        return os.environ
+
+
+def test_plain_backup(conffile, environ):
+    crestic.main(["plain", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file bla ~',
         env=os.environ,
@@ -34,8 +61,8 @@ def test_plain_backup():
     )
 
 
-def test_plain_forget():
-    crestic.main(["plain", "forget"])
+def test_plain_forget(conffile, environ):
+    crestic.main(["plain", "forget"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic forget --exclude-file bla',
         env=os.environ,
@@ -43,8 +70,8 @@ def test_plain_forget():
     )
 
 
-def test_boolean():
-    crestic.main(["boolean", "backup"])
+def test_boolean(conffile, environ):
+    crestic.main(["boolean", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file bla --quiet ~',
         env=os.environ,
@@ -52,8 +79,8 @@ def test_boolean():
     )
 
 
-def test_multivals():
-    crestic.main(["multivals", "backup"])
+def test_multivals(conffile, environ):
+    crestic.main(["multivals", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file bla --exclude config.py --exclude passwords.txt ~',
         env=os.environ,
@@ -61,8 +88,8 @@ def test_multivals():
     )
 
 
-def test_overloaded():
-    crestic.main(["overloaded", "backup"])
+def test_overloaded(conffile, environ):
+    crestic.main(["overloaded", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file overloaded ~',
         env=os.environ,
@@ -70,8 +97,8 @@ def test_overloaded():
     )
 
 
-def test_overloaded2():
-    crestic.main(["overloaded2", "backup"])
+def test_overloaded2(conffile, environ):
+    crestic.main(["overloaded2", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file overloaded2 ~',
         env=os.environ,
@@ -79,8 +106,8 @@ def test_overloaded2():
     )
 
 
-def test_overloadedargs():
-    crestic.main(["plain", "backup", "--exclude-file", "foo"])
+def test_overloadedargs(conffile, environ):
+    crestic.main(["plain", "backup", "--exclude-file", "foo"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file foo ~',
         env=os.environ,
@@ -88,8 +115,8 @@ def test_overloadedargs():
     )
 
 
-def test_extraargs():
-    crestic.main(["plain", "backup", "--quiet"])
+def test_extraargs(conffile, environ):
+    crestic.main(["plain", "backup", "--quiet"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         'restic backup --exclude-file bla --quiet ~',
         env=os.environ,
@@ -97,8 +124,8 @@ def test_extraargs():
     )
 
 
-def test_environ():
-    crestic.main(["environ", "backup"])
+def test_environ(conffile, environ):
+    crestic.main(["environ", "backup"], conffile=conffile, environ=environ)
 
     environ = dict(os.environ)
     environ.update({
@@ -113,13 +140,11 @@ def test_environ():
     )
 
 
-def test_dryrun(mock_print):
-    os.environ['CRESTIC_DRYRUN'] = "1"
-
-    crestic.main(["environ", "backup"])
+def test_dryrun(mock_print, dryrun, conffile, environ):
+    retval = crestic.main(["environ", "backup"], dryrun=dryrun, conffile=conffile, environ=environ)
 
     subprocess.call.assert_not_called()
     builtins.print.assert_called_with(
         'restic backup --exclude-file bla ~'
     )
-    sys.exit.assert_called_once_with(1)
+    assert retval == 1
