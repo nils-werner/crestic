@@ -11,7 +11,14 @@ import builtins
 
 @pytest.fixture(autouse=True)
 def clean_env(monkeypatch):
-    monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_FILE')
+    try:
+        monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_FILE')
+    except KeyError:
+        pass
+    try:
+        monkeypatch.delitem(os.environ, 'CRESTIC_DRYRUN')
+    except KeyError:
+        pass
 
 
 @pytest.fixture(autouse=True)
@@ -25,7 +32,7 @@ def mock_print(mocker):
 
 
 @pytest.fixture(params=[True, False])
-def conffile(monkeypatch, request):
+def conffile(monkeypatch, clean_env, request):
     val = 'tests/config.ini'
 
     if request.param:
@@ -36,7 +43,7 @@ def conffile(monkeypatch, request):
 
 
 @pytest.fixture(params=[True, False])
-def dryrun(monkeypatch, request):
+def dryrun(monkeypatch, clean_env, request):
     if request.param:
         monkeypatch.setitem(os.environ, 'CRESTIC_DRYRUN', "1")
         return None
