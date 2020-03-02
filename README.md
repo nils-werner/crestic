@@ -18,13 +18,7 @@ restic backup \
     ~
 ```
 
-becomes
-
-```Shell
-crestic home backup
-```
-
-after creating a config file like
+can be set in a config file
 
 ```INI
 # these are the options for any `crestic home` command
@@ -38,6 +32,12 @@ password-file: ~/.config/restic/password
 [home.backup]
 exclude-file: ~/.config/restic/excludes
 arguments: ~
+```
+
+and then called
+
+```Shell
+crestic home backup
 ```
 
 See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more complicated example with multiple repos and directories and forgetting rules.
