@@ -1,6 +1,7 @@
 import pytest
 
 import os
+import sys
 from crestic import config_files
 
 
@@ -22,9 +23,8 @@ def test_environ_config_file():
     assert paths == ['/fileA/crestic.ini']
 
 
-def test_default_configfiles(mocker):
-    mocker.patch("appdirs.user_config_dir", side_effect=ImportError)
-    mocker.patch("appdirs.site_config_dir", side_effect=ImportError)
+def test_default_configfiles(monkeypatch):
+    monkeypatch.setitem(sys.modules, "appdirs", None)
     paths = config_files()
     assert paths == [
         os.path.expanduser('~/.config/crestic/crestic.ini'),
