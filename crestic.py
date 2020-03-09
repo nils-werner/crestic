@@ -14,7 +14,7 @@ def config_files(environ=None):
     # Lowest priority: hardcoded values
     paths = os.pathsep.join([
         os.path.expanduser('~/.config/crestic'),
-        '/etc'
+        '/etc/crestic'
     ])
 
     # Low priority: optional appdirs import
@@ -39,7 +39,7 @@ def config_files(environ=None):
     except KeyError:
         pass
 
-    return [os.path.join(x, 'crestic.ini') for x in paths.split(os.pathsep)]
+    return [os.path.join(x, 'crestic.cfg') for x in paths.split(os.pathsep)]
 
 
 def main(argv, environ=None, conffile=None, dryrun=None):

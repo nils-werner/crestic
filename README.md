@@ -40,7 +40,7 @@ and then called
 crestic home backup
 ```
 
-See [examples/multiple_presets.ini](examples/multiple_presets.ini) for a more complicated example with multiple repos and directories and forgetting rules.
+See [examples/multiple_presets.cfg](examples/multiple_presets.cfg) for a more complicated example with multiple repos and directories and forgetting rules.
 
 Installation
 ------------
@@ -60,18 +60,18 @@ chmod +x ~/.local/bin/crestic
 
 ### Config File Detection
 
-Crestic optionally uses `appdirs` to automatically pick up config files from [one of these locations](https://github.com/ActiveState/appdirs):
-
-```Shell
-pip install git+https://github.com/nils-werner/crestic.git[appdirs]
-```
-
-If this library is unavailable, the following are used in descending order of importance:
+The following locations are used in descending order of importance:
 
  - environment variable `$CRESTIC_CONFIG_FILE`, a single filename
  - environment variable `$CRESTIC_CONFIG_PATHS`, a colon separated list of directories
- - `~/.config/crestic/crestic.ini`
- - `/etc/crestic.ini`
+ - `~/.config/crestic/crestic.cfg`
+ - `/etc/crestic.cfg`
+
+`crestic` may also optionally use `appdirs` to automatically pick up config files from platform-dependent locations. This is especially useful on macOS or Windows. Just install `appdirs`
+
+```Shell
+pip install appdirs
+```
 
 Requirements
 ------------
@@ -81,14 +81,22 @@ Plain Python 3.6+ on a UNIX system. Nothing else.
 Debugging
 ---------
 
-If you set the environment variable `$CRESTIC_DRYRUN`, `crestic` will output the final command instead of running it. I.e.
+If you set the environment variable `$CRESTIC_DRYRUN`, `crestic` will not run `restic` but instead output
+
+ - the config files in use
+ - the config sections in use
+ - the final command
 
 ```Shell
-env CRESTIC_DRYRUN=1 crestic home backup
+env CRESTIC_CONFIG_FILE=examples/multiple_presets.cfg CRESTIC_DRYRUN=1 crestic home backup
 ```
 
 will print
 
-```Shell
-restic backup --repo sftp:your_server:my_computer.restic --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes ~
+```
+         Warning: Executing in debug mode. restic will not run, backups are not touched!
+    Config files: examples/multiple_presets.cfg
+ Config sections: global, global.backup, home, home.backup
+Expanded command: restic backup --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes --exclude config.py --exclude passwords.txt
+
 ```
