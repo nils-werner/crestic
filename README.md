@@ -58,11 +58,20 @@ curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic.py --o
 chmod +x ~/.local/bin/crestic
 ```
 
-and set the environment variable `$CRESTIC_CONFIG_FILE`, i.e.
+### Config File Detection
+
+Crestic optionally uses `appdirs` to automatically pick up config files from [one of these locations](https://github.com/ActiveState/appdirs):
 
 ```Shell
-echo "export CRESTIC_CONFIG_FILE=~/.config/restic/crestic.ini" >> .bashrc
+pip install git+https://github.com/nils-werner/crestic.git[appdirs]
 ```
+
+If this library is unavailable, the following are used in descending order of importance:
+
+ - environment variable `$CRESTIC_CONFIG_FILE`, a single filename
+ - environment variable `$CRESTIC_CONFIG_PATHS`, a colon separated list of directories
+ - `~/.config/crestic/crestic.ini`
+ - `/etc/crestic.ini`
 
 Requirements
 ------------

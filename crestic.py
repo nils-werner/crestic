@@ -7,12 +7,47 @@ import subprocess
 import configparser
 
 
+def config_files(environ=None):
+    if environ is None:
+        environ = {}
+
+    # Lowest priority: hardcoded values
+    paths = os.pathsep.join([
+        os.path.expanduser('~/.config/crestic'),
+        '/etc'
+    ])
+
+    # Low priority: optional appdirs import
+    try:
+        import appdirs
+        paths = os.pathsep.join([
+            appdirs.user_config_dir('crestic'),
+            appdirs.site_config_dir('crestic', multipath=True)
+        ])
+    except ImportError as e:
+        pass
+
+    # Medium priority: CRESTIC_CONFIG_PATHS
+    try:
+        paths = environ['CRESTIC_CONFIG_PATHS']
+    except KeyError:
+        pass
+
+    # High priority: CRESTIC_CONFIG_FILE
+    try:
+        return [environ['CRESTIC_CONFIG_FILE']]
+    except KeyError:
+        pass
+
+    return [os.path.join(x, 'crestic.ini') for x in paths.split(os.pathsep)]
+
+
 def main(argv, environ=None, conffile=None, dryrun=None):
     if environ is None:
         environ = os.environ
 
     if conffile is None:
-        conffile = environ['CRESTIC_CONFIG_FILE']
+        conffile = config_files(environ)
 
     if dryrun is None:
         dryrun = environ.get("CRESTIC_DRYRUN", False)
@@ -104,8 +139,9 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     argstring = [val for val in argstring if val != ""]
 
     if dryrun:
-        print("Warning: Executing in debug mode. restic will not run, backups are not touched!")
-        print(" ".join(argstring))
+        print("         Warning:", "Executing in debug mode. restic will not run, backups are not touched!")
+        print("    Config files:", ":".join(conffile))
+        print("Expanded command:", " ".join(argstring))
         return 1
     else:
         try:

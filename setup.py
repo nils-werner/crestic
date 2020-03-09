@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='crestic',
-    version='0.2.0',
+    version='0.3.0a1',
     description='Configurable restic',
     author='Nils Werner',
     author_email='nils.werner@gmail.com',
@@ -20,6 +20,9 @@ setup(
             'pytest-cov',
             'pytest-mock',
             'pytest-pycodestyle',
+        ],
+        'appdirs': [
+            'appdirs'
         ],
     },
 )
