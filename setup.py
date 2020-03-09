@@ -20,9 +20,10 @@ setup(
             'pytest-cov',
             'pytest-mock',
             'pytest-pycodestyle',
+            'appdirs',
         ],
         'appdirs': [
-            'appdirs'
+            'appdirs',
         ],
     },
 )
