@@ -140,7 +140,8 @@ def main(argv, environ=None, conffile=None, dryrun=None):
 
     if dryrun:
         print("         Warning:", "Executing in debug mode. restic will not run, backups are not touched!")
-        print("    Config files:", ":".join(conffile))
+        print("    Config files:", ", ".join(conffile))
+        print(" Config sections:", ", ".join(sections))
         print("Expanded command:", " ".join(argstring))
         return 1
     else:
