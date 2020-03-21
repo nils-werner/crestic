@@ -63,7 +63,7 @@ chmod +x ~/.local/bin/crestic
 The following locations are used in descending order of importance:
 
  - environment variable `$CRESTIC_CONFIG_FILE`, a single filename
- - environment variable `$CRESTIC_CONFIG_PATHS`, a colon separated list of directories
+ - environment variable `$CRESTIC_CONFIG_PATHS`, a colon separated list of directories containing a file `crestic.cfg`
  - `~/.config/crestic/crestic.cfg`
  - `/etc/crestic.cfg`
 
@@ -94,9 +94,12 @@ env CRESTIC_CONFIG_FILE=examples/multiple_presets.cfg CRESTIC_DRYRUN=1 crestic h
 will print
 
 ```
-         Warning: Executing in debug mode. restic will not run, backups are not touched!
-    Config files: examples/multiple_presets.cfg
- Config sections: global, global.backup, home, home.backup
-Expanded command: restic backup --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes --exclude config.py --exclude passwords.txt
-
+             Warning: Executing in debug mode. restic will not run, backups are not touched!
+        Config files: examples/multiple_presets.cfg
+   Config files used: examples/multiple_presets.cfg
+     Config sections: global, global.backup, home, home.backup
+Config sections used: global, global.backup
+        Env sections: global.environ, global.backup.environ, home.environ, home.backup.environ
+   Env sections used:
+    Expanded command: restic backup --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes --exclude config.py --exclude passwords.txt
 ```
