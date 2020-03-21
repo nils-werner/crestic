@@ -68,7 +68,7 @@ def main(argv, environ=None, conffile=None, dryrun=None):
 
     config = configparser.ConfigParser()
     config.optionxform = str  # dont map config keys to lower case
-    config.read(conffile)
+    conffile_read = config.read(conffile)
 
     sections = [
         "global",
@@ -80,19 +80,25 @@ def main(argv, environ=None, conffile=None, dryrun=None):
             f"{python_args.preset}.{python_args.command}",
         ]
 
+    envsections = [f"{section}.environ" for section in sections]
+
     # Load restic options from config, in ascending precedence
     restic_options = {}
+    sections_read = []
     for section in sections:
         try:
             restic_options.update(**dict(config[section]))
+            sections_read.append(section)
         except KeyError:
             pass
 
     # Load restic environment variables from config, in ascending precedence
     restic_environ = dict(environ)
-    for section in sections:
+    envsections_read = []
+    for envsection in envsections:
         try:
-            restic_environ.update(**dict(config[f"{section}.environ"]))
+            restic_environ.update(**dict(config[envsection]))
+            envsections_read.append(envsection)
         except KeyError:
             pass
 
@@ -139,10 +145,14 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     argstring = [val for val in argstring if val != ""]
 
     if dryrun:
-        print("         Warning:", "Executing in debug mode. restic will not run, backups are not touched!")
-        print("    Config files:", ", ".join(conffile))
-        print(" Config sections:", ", ".join(sections))
-        print("Expanded command:", " ".join(argstring))
+        print("             Warning:", "Executing in debug mode. restic will not run, backups are not touched!")
+        print("        Config files:", ", ".join(conffile))
+        print("   Config files used:", ", ".join(conffile_read))
+        print("     Config sections:", ", ".join(sections))
+        print("Config sections used:", ", ".join(sections_read))
+        print("        Env sections:", ", ".join(envsections))
+        print("   Env sections used:", ", ".join(envsections_read))
+        print("    Expanded command:", " ".join(argstring))
         return 1
     else:
         try:

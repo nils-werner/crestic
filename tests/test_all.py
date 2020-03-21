@@ -152,7 +152,7 @@ def test_dryrun(mock_print, dryrun, conffile, environ):
 
     subprocess.call.assert_not_called()
     builtins.print.assert_called_with(
-        'Expanded command:',
+        '    Expanded command:',
         'restic backup --exclude-file bla ~'
     )
     assert retval == 1
