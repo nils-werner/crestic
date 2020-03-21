@@ -5,6 +5,11 @@ import sys
 from crestic import config_files
 
 
+@pytest.fixture
+def no_appdirs(monkeypatch):
+    monkeypatch.setitem(sys.modules, "appdirs", None)
+
+
 def test_xdg_configfiles():
     paths = config_files()
     assert paths == [
@@ -23,8 +28,7 @@ def test_environ_config_file():
     assert paths == ['/fileA/crestic.cfg']
 
 
-def test_default_configfiles(monkeypatch):
-    monkeypatch.setitem(sys.modules, "appdirs", None)
+def test_default_configfiles(no_appdirs):
     paths = config_files()
     assert paths == [
         os.path.expanduser('~/.config/crestic/crestic.cfg'),
