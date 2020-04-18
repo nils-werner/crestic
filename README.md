@@ -42,6 +42,8 @@ crestic home backup
 
 See [examples/multiple_presets.cfg](examples/multiple_presets.cfg) for a more complicated example with multiple repos and directories and forgetting rules.
 
+See [examples/split_presets.cfg](examples/split_presets.cfg) for an example of `location@repo` *split presets*.
+
 Installation
 ------------
 

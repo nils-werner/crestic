@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import sys
 import argparse
 import subprocess
@@ -42,6 +43,25 @@ def config_files(environ=None):
     return [os.path.join(x, 'crestic.cfg') for x in paths.split(os.pathsep)]
 
 
+def split(string, delimiter="@", maxsplit=1):
+    """
+    Split a string using a delimiter string. But keep the delimiter in all returned segments
+
+    """
+    splits = string.split(delimiter, maxsplit=maxsplit)
+    splits[1:] = [delimiter + s for s in splits[1:]]
+    splits[:-1] = [s + delimiter for s in splits[:-1]]
+    return splits
+
+
+def valid_preset(value):
+    if not re.match(r"^\w+(@\w+)*$", value):
+        raise argparse.ArgumentTypeError(
+            "%s is an invalid preset name, only preset names in the format of name[@suffix] are allowed." % value
+        )
+    return value
+
+
 def main(argv, environ=None, conffile=None, dryrun=None):
     if environ is None:
         environ = os.environ
@@ -53,7 +73,7 @@ def main(argv, environ=None, conffile=None, dryrun=None):
         dryrun = environ.get("CRESTIC_DRYRUN", False)
 
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("preset", nargs="?")
+    parser.add_argument("preset", nargs="?", type=valid_preset)
     parser.add_argument("command", help="the restic command")
 
     # CLI options that override values given in config file
@@ -78,6 +98,12 @@ def main(argv, environ=None, conffile=None, dryrun=None):
         f"global.{python_args.command}",
     ]
     if python_args.preset is not None:
+        for preset in split(python_args.preset)[::-1]:
+            sections += [
+                f"{preset}",
+                f"{preset}.{python_args.command}",
+            ]
+
         sections += [
             f"{python_args.preset}",
             f"{python_args.preset}.{python_args.command}",

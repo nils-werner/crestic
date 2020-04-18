@@ -165,3 +165,10 @@ def test_dryrun(mock_print, dryrun, conffile, environ):
         'restic backup --exclude-file bla ~'
     )
     assert retval == 1
+
+
+def test_invalid(mock_print):
+    with pytest.raises(SystemExit):
+        retval = crestic.main(["@nas", "backup"])
+
+    subprocess.call.assert_not_called()
