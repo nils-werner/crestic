@@ -59,7 +59,10 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     # CLI options that override values given in config file
     for arg in argv:
         if arg.startswith(("-", "--")) and arg != "--":
-            parser.add_argument(arg, nargs='?', dest=arg.lstrip("-"))
+            try:
+                parser.add_argument(arg, nargs='?', action='append', dest=arg.lstrip("-"))
+            except argparse.ArgumentError:
+                pass
 
     parser.add_argument(
         "arguments", nargs="*", help="positional arguments for the restic command"
@@ -123,10 +126,6 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     del python_args_dict['preset']
     del python_args_dict['command']
     del python_args_dict['arguments']
-    python_args_dict = {
-        k: v.splitlines() if v is not None else [""]
-        for k, v in python_args_dict.items()
-    }
     restic_options.update(python_args_dict)
 
     # Construct command

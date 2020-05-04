@@ -122,6 +122,15 @@ def test_overloadedargs(conffile, environ):
     )
 
 
+def test_multipleargs(conffile, environ):
+    crestic.main(["plain", "backup", "--exclude-file", "foo", "--exclude-file", "bar"], conffile=conffile, environ=environ)
+    subprocess.call.assert_called_once_with(
+        'restic backup --exclude-file foo --exclude-file bar ~',
+        env=os.environ,
+        shell=True
+    )
+
+
 def test_extraargs(conffile, environ):
     crestic.main(["plain", "backup", "--quiet"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
