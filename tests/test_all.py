@@ -164,7 +164,7 @@ def test_dryrun(mock_print, dryrun, conffile, environ):
         '    Expanded command:',
         'restic backup --exclude-file bla ~'
     )
-    assert retval == 1
+    assert retval == 0
 
 
 def test_invalid(mock_print):
