@@ -178,7 +178,7 @@ def main(argv, environ=None, conffile=None, dryrun=None):
         print("        Env sections:", ", ".join(envsections))
         print("   Env sections used:", ", ".join(envsections_read))
         print("    Expanded command:", " ".join(argstring))
-        return 1
+        return 0
     else:
         try:
             return subprocess.call(" ".join(argstring), env=restic_environ, shell=True)
