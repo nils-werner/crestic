@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='crestic',
-    version='0.3.0',
+    version='0.4.0',
     description='Configurable restic',
     author='Nils Werner',
     author_email='nils.werner@gmail.com',
