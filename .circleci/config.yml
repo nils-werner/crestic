@@ -5,6 +5,12 @@ workflows:
     jobs:
       - test-latest
       - test-3.6
+      - deploy:
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
 jobs:
   test-latest: &test-template
     docker:
@@ -35,3 +41,29 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:3.6
+  deploy:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "setup.cfg" }}
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -e .[tests] twine
+      - run:
+          name: create packages
+          command: |
+            . venv/bin/activate
+            python setup.py sdist bdist_wheel
+      - run:
+          name: upload to pypi
+          command: |
+            . venv/bin/activate
+            twine upload dist/*
