@@ -8,7 +8,9 @@ Why? [Because restic is unfortunately still missing config files](https://github
 Usage
 -----
 
-This tool does not try to be clever, it simply maps any commandline options for restic to a key in an INI file. I.e. backing up your home directory with a password and an exclude-file
+This tool does not try to be clever, it simply maps any *commandline options* for `restic` to a *key in an config file*.
+
+For example, to use `restic` to back up your home directory with a password and an exclude-file, you would use
 
 ```Shell
 restic backup \
@@ -18,31 +20,25 @@ restic backup \
     ~
 ```
 
-can be set in a config file
+With `crestic`, you can set all these values in a config file
 
 ```INI
-# these are the options for any `crestic home` command
 [home]
 repo: sftp:your_server:my_computer.restic
 password-file: ~/.config/restic/password
 
-# these are the options for the `crestic home backup` command
-# `arguments` are positional arguments that are appended at the end of the
-# commandline. Restic expects the list of directories here.
 [home.backup]
 exclude-file: ~/.config/restic/excludes
 arguments: ~
 ```
 
-and then called
+and then call one simple command
 
 ```Shell
 crestic home backup
 ```
 
-See [examples/multiple_presets.cfg](examples/multiple_presets.cfg) for a more complicated example with multiple repos and directories and forgetting rules.
-
-See [examples/split_presets.cfg](examples/split_presets.cfg) for an example of `location@repo` *split presets*.
+More advanced usage examples can be found further down this file.
 
 Installation
 ------------
@@ -50,7 +46,7 @@ Installation
 Just install it using `pip`
 
 ```Shell
-pip install git+https://github.com/nils-werner/crestic.git
+pip install crestic
 ```
 
 or download `crestic` into your `$PATH`
@@ -90,7 +86,7 @@ If you set the environment variable `$CRESTIC_DRYRUN`, `crestic` will not run `r
  - the final command
 
 ```Shell
-env CRESTIC_CONFIG_FILE=examples/multiple_presets.cfg CRESTIC_DRYRUN=1 crestic home backup
+env CRESTIC_DRYRUN=1 crestic home backup
 ```
 
 will print
@@ -105,3 +101,125 @@ Config sections used: global, global.backup
    Env sections used:
     Expanded command: restic backup --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes --exclude config.py --exclude passwords.txt
 ```
+
+Config File Parsing
+-------------------
+
+On the commandline, `crestic` commands follow the syntax
+
+```Shell
+crestic preset command [--options, ...]
+```
+
+Where `preset` is a preset key in the config file, and `command` is the `restic` command.
+
+Crestic config keys follow the convention
+
+```INI
+[preset]
+[preset.command]
+```
+
+where `preset` and `command` are the preset and command names from above. For example
+
+```INI
+[home]
+...
+[home.backup]
+...
+```
+
+are read for `crestic home backup` calls.
+
+There exist a few special config keys:
+
+ - `[global]` is a special pseudo preset which is always read *before* any actual preset value.
+ - `[global.command]` is a special pseudo command which is always read *before* any actual preset command. These two keys can be used to set global values, valid for any preset, i.e. a password-file
+ - `[global.environ]`, `[preset.environ]`, `[global.command.environ]` and `[preset.command.environ]` are special pseudo commands which are used to set environment variables for the `restic` command. They are usually used to set [cloud provider credentials](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html#amazon-s3).
+
+Config keys are always read in the following order, of ascending importance. Later values override earlier ones:
+
+ 1. `[global]`
+ 1. `[global.command]`
+ 1. `[preset]`
+ 1. `[preset.command]`
+ 1. options from the commandline
+
+Advanced Usage
+--------------
+
+### Multiple preset
+
+`crestic` allows multiple presets per config file, so you can define config files
+
+```INI
+[global]
+password-file: ~/.config/restic/password
+
+[global]
+repo: sftp:your_server:my_computer.restic
+
+[global.backup]
+exclude-file: ~/.config/restic/excludes
+
+[home.backup]
+arguments: ~
+
+[work.backup]
+arguments: ~/work
+```
+
+Which can be used as `crestic home backup` and `crestic work backup`
+
+See [examples/multiple_presets.cfg](examples/multiple_presets.cfg) for a more complicated example with multiple repos and directories and forgetting rules.
+
+### Split preset
+
+`crestic` allows for so-called *split presets*. These split presets are in the format of `prefix@suffix` and are usually used to separate local location values from remote repo locations, i.e. `location@repo`.
+
+Using this techique you can back up several locations on your machine to several remote repositories, i.e. a `home` and a `work` location to a `disk` and a `cloud` repo
+
+```Shell
+crestic home@disk backup
+crestic home@cloud backup
+crestic work@disk backup
+crestic work@cloud backup
+```
+
+To use these split presets, simply define location keys with an `@` suffix
+
+```INI
+[home@.backup]
+arguments: ~
+
+[work@.backup]
+arguments: ~/work
+```
+
+and repo keys with an `@` prefix
+
+```INI
+[@disk]
+repo: /Volumes/Backup
+
+[@cloud]
+repo: b2:bucketname:my_computer.restic
+
+[@cloud.environ]
+B2_ACCOUNT_ID: <MY_APPLICATION_KEY_ID>
+B2_ACCOUNT_KEY: <MY_APPLICATION_KEY>
+```
+
+Split config keys are always read in the following order, of ascending importance. Later values override earlier ones:
+
+ 1. `[global]`
+ 1. `[global.command]`
+ 1. `[@repo]`
+ 1. `[@repo.command]`
+ 1. `[location@]`
+ 1. `[location@.command]`
+ 1. `[location@repo]`
+ 1. `[location@repo.command]`
+ 1. options from the commandline
+
+See [examples/split_presets.cfg](examples/split_presets.cfg) for a complete example of `location@repo` *split presets*.
