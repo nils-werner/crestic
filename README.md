@@ -245,7 +245,7 @@ ExecStart=/usr/bin/crestic %I backup
 
 and a file `~/.config/systemd/user/crestic@.timer`
 
-```
+```INI
 [Unit]
 Description=Daily crestic %I backup
 
