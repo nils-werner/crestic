@@ -223,3 +223,77 @@ Split config keys are always read in the following order, of ascending importanc
  1. options from the commandline
 
 See [examples/split_presets.cfg](examples/split_presets.cfg) for a complete example of `location@repo` *split presets*.
+
+### Automated Backups
+
+Make sure to adjust the path to the `crestic` executable in the following sections.
+
+#### Linux/systemd
+
+For daily backups using systemd timers, create a file `~/.config/systemd/user/crestic@.service`
+
+```INI
+[Unit]
+Description=crestic %I backup
+
+[Service]
+Nice=19
+IOSchedulingClass=idle
+KillSignal=SIGINT
+ExecStart=/usr/bin/crestic %I backup
+```
+
+and a file `~/.config/systemd/user/crestic@.timer`
+
+```
+[Unit]
+Description=Daily crestic %I backup
+
+[Timer]
+OnCalendar=daily
+AccuracySec=1m
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+then activate the timer for your crestic preset, i.e. for `home@nas`
+
+
+```Shell
+systemctl --user enable --now crestic@home@nas.timer
+```
+
+Also see [the Arch Linux package](https://aur.archlinux.org/cgit/aur.git/tree/?h=crestic) for a working solution including systemd timers.
+
+#### macOS/launchctl
+
+For daily backups using launchctl timers, i.e. for the `home@nas` preset, create a file `~/Library/LaunchAgents/local.crestic.home@nas.plist`
+
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Daily crestic home@nas backup</key>
+    <string>local.crestic.home@nas</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>crestic</string>
+        <string>home@nas</string>
+        <string>backup</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>86400</integer>
+</dict>
+</plist>
+```
+
+then activate the timer
+
+
+```Shell
+launchctl load ~/Library/LaunchAgents/local.crestic.home@nas.plist
+```
