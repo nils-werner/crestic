@@ -230,7 +230,7 @@ Make sure to adjust the path to the `crestic` executable in the following sectio
 
 #### Linux/systemd
 
-For daily backups using systemd timers, create a file `~/.config/systemd/user/crestic@.service`
+For daily user backups using systemd timers, create a file `~/.config/systemd/user/crestic@.service`
 
 ```INI
 [Unit]
@@ -266,11 +266,13 @@ then activate the timer for your crestic preset, i.e. for `home@nas`
 systemctl --user enable --now crestic@home@nas.timer
 ```
 
+For system backups, put these files in `/etc/systemd/system` and the config in `/etc/crestic.cfg`
+
 Also see [the Arch Linux package](https://aur.archlinux.org/cgit/aur.git/tree/?h=crestic) for a working solution including systemd timers.
 
 #### macOS/launchctl
 
-For daily backups using launchctl timers, i.e. for the `home@nas` preset, create a file `~/Library/LaunchAgents/local.crestic.home@nas.plist`
+For daily user backups using launchctl timers, i.e. for the `home@nas` preset, create a file `~/Library/LaunchAgents/local.crestic.home@nas.plist`
 
 ```XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -297,3 +299,5 @@ then activate the timer
 ```Shell
 launchctl load ~/Library/LaunchAgents/local.crestic.home@nas.plist
 ```
+
+For system backups, put this file in `/Library/LaunchAgents` and the config in `/etc/crestic.cfg`
