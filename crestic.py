@@ -14,7 +14,7 @@ def config_files(environ=None):
 
     # Lowest priority: hardcoded values
     paths = os.pathsep.join([
-        os.path.expanduser('~/.config/crestic'),
+        pathexpand('~/.config/crestic'),
         '/etc/crestic'
     ])
 
@@ -60,6 +60,10 @@ def valid_preset(value):
             "%s is an invalid preset name, only preset names in the format of name[@suffix] are allowed." % value
         )
     return value
+
+
+def pathexpand(val):
+    return os.path.expanduser(os.path.expandvars(val))
 
 
 def main(argv, environ=None, conffile=None, dryrun=None):
@@ -168,6 +172,7 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     argstring += restic_arguments
 
     argstring = [val for val in argstring if val != ""]
+    argstring = [pathexpand(val) for val in argstring]
 
     if dryrun:
         print("             Warning:", "Executing in debug mode. restic will not run, backups are not touched!")
@@ -181,7 +186,7 @@ def main(argv, environ=None, conffile=None, dryrun=None):
         return 0
     else:
         try:
-            return subprocess.call(" ".join(argstring), env=restic_environ, shell=True)
+            return subprocess.call(argstring, env=restic_environ, shell=False)
         except KeyboardInterrupt:
             return 130
 

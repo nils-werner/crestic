@@ -62,81 +62,81 @@ def environ(monkeypatch, request):
 def test_plain_backup(conffile, environ):
     crestic.main(["plain", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file bla ~',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_plain_forget(conffile, environ):
     crestic.main(["plain", "forget"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic forget --exclude-file bla',
+        ['restic', 'forget', '--exclude-file', 'bla'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_boolean(conffile, environ):
     crestic.main(["boolean", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file bla --quiet ~',
+        ['restic', 'backup', '--exclude-file', 'bla', '--quiet', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_multivals(conffile, environ):
     crestic.main(["multivals", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file bla --exclude config.py --exclude passwords.txt ~',
+        ['restic', 'backup', '--exclude-file', 'bla', '--exclude', 'config.py', '--exclude', 'passwords.txt', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_overloaded(conffile, environ):
     crestic.main(["overloaded", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file overloaded ~',
+        ['restic', 'backup', '--exclude-file', 'overloaded', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_overloaded2(conffile, environ):
     crestic.main(["overloaded2", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file overloaded2 ~',
+        ['restic', 'backup', '--exclude-file', 'overloaded2', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_overloadedargs(conffile, environ):
     crestic.main(["plain", "backup", "--exclude-file", "foo"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file foo ~',
+        ['restic', 'backup', '--exclude-file', 'foo', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_multipleargs(conffile, environ):
     crestic.main(["plain", "backup", "--exclude-file", "foo", "--exclude-file", "bar"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file foo --exclude-file bar ~',
+        ['restic', 'backup', '--exclude-file', 'foo', '--exclude-file', 'bar', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
 def test_extraargs(conffile, environ):
     crestic.main(["plain", "backup", "--quiet"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file bla --quiet ~',
+        ['restic', 'backup', '--exclude-file', 'bla', '--quiet', '/home/user'],
         env=os.environ,
-        shell=True
+        shell=False,
     )
 
 
@@ -150,9 +150,9 @@ def test_environ(conffile, environ):
     })
 
     subprocess.call.assert_called_once_with(
-        'restic backup --exclude-file bla ~',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
         env=environ,
-        shell=True
+        shell=False,
     )
 
 
@@ -162,7 +162,7 @@ def test_dryrun(mock_print, dryrun, conffile, environ):
     subprocess.call.assert_not_called()
     builtins.print.assert_called_with(
         '    Expanded command:',
-        'restic backup --exclude-file bla ~'
+        'restic backup --exclude-file bla /home/user'
     )
     assert retval == 0
 
@@ -172,3 +172,23 @@ def test_invalid(mock_print):
         retval = crestic.main(["@nas", "backup"])
 
     subprocess.call.assert_not_called()
+
+
+def test_expanded_tilde(conffile, environ):
+    retval = crestic.main(["plain", "backup", "~"], conffile=conffile, environ=environ)
+
+    subprocess.call.assert_called_once_with(
+        ['restic', 'backup', '--exclude-file', 'bla', os.path.expanduser('~')],
+        env=os.environ,
+        shell=False,
+    )
+
+
+def test_expanded_variable(conffile, environ):
+    retval = crestic.main(["plain", "backup", "$HOME"], conffile=conffile, environ=environ)
+
+    subprocess.call.assert_called_once_with(
+        ['restic', 'backup', '--exclude-file', 'bla', os.path.expandvars('$HOME')],
+        env=os.environ,
+        shell=False,
+    )
