@@ -192,3 +192,13 @@ def test_expanded_variable(conffile, environ):
         env=os.environ,
         shell=False,
     )
+
+
+@pytest.mark.skipif(sys.version_info < (3, 7), reason="requires python3.7 or higher")
+def test_intermixed(conffile, environ):
+    crestic.main(["plain", "restore", "--include", "path space", "--target", ".", "asd"], conffile=conffile, environ=environ)
+    subprocess.call.assert_called_once_with(
+        ['restic', 'restore', '--exclude-file', 'bla', '--include', 'path space', '--target', '.', 'asd'],
+        env=os.environ,
+        shell=False,
+    )

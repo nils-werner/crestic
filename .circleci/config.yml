@@ -6,6 +6,10 @@ workflows:
           version: "latest"
       - test:
           version: "3.6"
+      - test:
+          version: "3.7"
+      - test:
+          version: "3.8"
 jobs:
   test:
     parameters:

@@ -91,7 +91,10 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     parser.add_argument(
         "arguments", nargs="*", help="positional arguments for the restic command"
     )
-    python_args = parser.parse_args(argv)
+    try:
+        python_args = parser.parse_intermixed_args(argv)
+    except AttributeError:
+        python_args = parser.parse_args(argv)
 
     config = configparser.ConfigParser()
     config.optionxform = str  # dont map config keys to lower case
