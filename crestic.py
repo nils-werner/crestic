@@ -66,7 +66,7 @@ def pathexpand(val):
     return os.path.expanduser(os.path.expandvars(val))
 
 
-def main(argv, environ=None, conffile=None, dryrun=None):
+def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     if environ is None:
         environ = os.environ
 
@@ -75,6 +75,9 @@ def main(argv, environ=None, conffile=None, dryrun=None):
 
     if dryrun is None:
         dryrun = environ.get("CRESTIC_DRYRUN", False)
+
+    if executable is None:
+        executable = environ.get("CRESTIC_EXECUTABLE", "restic").split()
 
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?", type=valid_preset)
@@ -162,7 +165,8 @@ def main(argv, environ=None, conffile=None, dryrun=None):
     restic_options.update(python_args_dict)
 
     # Construct command
-    argstring = ["restic", f"{python_args.command}"]
+    argstring = executable
+    argstring.append(f"{python_args.command}")
     for key, lines in restic_options.items():
         if lines is not None:
             for value in lines:
