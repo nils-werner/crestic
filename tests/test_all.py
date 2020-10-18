@@ -61,9 +61,11 @@ def environ(monkeypatch, request):
 
 @pytest.fixture(params=[True, False], autouse=True)
 def mock_parse_intermixed_args(request, monkeypatch):
-    import argparse
-
     if request.param:
+        if sys.version_info < (3, 7):
+            pytest.skip("requires python3.7 or higher")
+
+        import argparse
         monkeypatch.delattr(argparse.ArgumentParser, 'parse_intermixed_args')
 
     return request.param
