@@ -59,6 +59,16 @@ def environ(monkeypatch, request):
         return os.environ
 
 
+@pytest.fixture(params=[True, False], autouse=True)
+def mock_parse_intermixed_args(request, monkeypatch):
+    import argparse
+
+    if request.param:
+        monkeypatch.delattr(argparse.ArgumentParser, 'parse_intermixed_args')
+
+    return request.param
+
+
 def test_plain_backup(conffile, environ):
     crestic.main(["plain", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
@@ -81,6 +91,15 @@ def test_boolean(conffile, environ):
     crestic.main(["boolean", "backup"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         ['restic', 'backup', '--exclude-file', 'bla', '--quiet', '/home/user'],
+        env=os.environ,
+        shell=False,
+    )
+
+
+def test_singlechar(conffile, environ):
+    crestic.main(["singlechar", "backup"], conffile=conffile, environ=environ)
+    subprocess.call.assert_called_once_with(
+        ['restic', 'backup', '--exclude-file', 'bla', '-r', 'repo-url', '/home/user'],
         env=os.environ,
         shell=False,
     )
@@ -195,10 +214,25 @@ def test_expanded_variable(conffile, environ):
 
 
 @pytest.mark.skipif(sys.version_info < (3, 7), reason="requires python3.7 or higher")
-def test_intermixed(conffile, environ):
+def test_intermixed(conffile, environ, mock_parse_intermixed_args):
+    if mock_parse_intermixed_args:
+        pytest.skip()
+
     crestic.main(["plain", "restore", "--include", "path space", "--target", ".", "asd"], conffile=conffile, environ=environ)
     subprocess.call.assert_called_once_with(
         ['restic', 'restore', '--exclude-file', 'bla', '--include', 'path space', '--target', '.', 'asd'],
         env=os.environ,
         shell=False,
     )
+
+
+def test_intermixed_error(conffile, environ, mock_parse_intermixed_args):
+    if not mock_parse_intermixed_args:
+        pytest.skip()
+
+    with pytest.raises(SystemExit):
+        crestic.main(
+            ["plain", "restore", "--include", "path space", "--target", ".", "asd"],
+            conffile=conffile,
+            environ=environ
+        )
