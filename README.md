@@ -8,9 +8,13 @@ Why? [Because restic is unfortunately still missing config files](https://github
 Usage
 -----
 
-This tool does not try to be clever, it simply maps any *commandline options* for `restic` to a *key in an config file*.
+The goal of `crestic` is to make running `restic` easy, e.g. creating backups using
 
-For example, to use `restic` to back up your home directory with a password and an exclude-file, you would use
+```Shell
+crestic home backup
+```
+
+instead of running complex `restic` commands
 
 ```Shell
 restic backup \
@@ -20,7 +24,7 @@ restic backup \
     ~
 ```
 
-With `crestic`, you can set all these values in a config file
+To achieve this, this tool does not try to be clever, it simply maps any *commandline options* for `restic` to a *key in an config file*:
 
 ```INI
 [home]
@@ -30,12 +34,6 @@ password-file: ~/.config/restic/password
 [home.backup]
 exclude-file: ~/.config/restic/excludes
 arguments: ~
-```
-
-and then call one simple command
-
-```Shell
-crestic home backup
 ```
 
 More advanced usage examples can be found further down this file.
