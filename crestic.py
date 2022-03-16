@@ -15,7 +15,8 @@ def config_files(environ=None):
     # Lowest priority: hardcoded values
     paths = os.pathsep.join([
         pathexpand('~/.config/crestic'),
-        '/etc/crestic'
+        '/etc/crestic',
+        '/etc'
     ])
 
     # Low priority: optional appdirs import
@@ -23,7 +24,8 @@ def config_files(environ=None):
         import appdirs
         paths = os.pathsep.join([
             appdirs.user_config_dir('crestic'),
-            appdirs.site_config_dir('crestic', multipath=True)
+            appdirs.site_config_dir('crestic', multipath=True),
+            paths
         ])
     except ImportError as e:
         pass
