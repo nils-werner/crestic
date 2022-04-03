@@ -3,6 +3,7 @@
 import os
 import re
 import sys
+import glob
 import argparse
 import subprocess
 import configparser
@@ -13,34 +14,34 @@ def config_files(environ=None):
         environ = {}
 
     # Lowest priority: hardcoded values
-    paths = os.pathsep.join([
-        pathexpand('~/.config/crestic'),
-        '/etc/crestic'
-    ])
+    paths = [
+        '/usr/share/crestic/config.cfg',
+        *sorted(glob.glob('/usr/share/crestic/conf.d/*.cfg')),
 
-    # Low priority: optional appdirs import
-    try:
-        import appdirs
-        paths = os.pathsep.join([
-            appdirs.user_config_dir('crestic'),
-            appdirs.site_config_dir('crestic', multipath=True)
-        ])
-    except ImportError as e:
-        pass
+        '/etc/crestic/config.cfg',
+        *sorted(glob.glob('/etc/crestic/conf.d/*.cfg')),
+
+        pathexpand('~/.config/crestic/config.cfg'),
+        *sorted(glob.glob(pathexpand('~/.config/crestic/conf.d/*.cfg'))),
+    ]
 
     # Medium priority: CRESTIC_CONFIG_PATHS
     try:
-        paths = environ['CRESTIC_CONFIG_PATHS']
+        paths = paths + [
+            f
+            for d in environ['CRESTIC_CONFIG_PATHS'].split(os.pathsep)
+            for f in sorted(glob.glob(pathexpand(d)))
+        ]
     except KeyError:
         pass
 
-    # High priority: CRESTIC_CONFIG_FILE
+    # High priority: CRESTIC_CONFIG_FILE, dropping the rest
     try:
-        return [environ['CRESTIC_CONFIG_FILE']]
+        paths = [environ['CRESTIC_CONFIG_FILE']]
     except KeyError:
         pass
 
-    return [os.path.join(x, 'crestic.cfg') for x in paths.split(os.pathsep)]
+    return paths
 
 
 def split(string, delimiter="@", maxsplit=1):
