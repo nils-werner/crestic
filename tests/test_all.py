@@ -37,7 +37,7 @@ def mock_print(mocker):
 
 @pytest.fixture()
 def conffile():
-    return 'tests/config.ini'
+    return ['tests/config.ini', 'tests/overloading_config.ini']
 
 
 @pytest.fixture(params=[True, False])
@@ -236,3 +236,13 @@ def test_intermixed_error(conffile, environ, mock_parse_intermixed_args):
             conffile=conffile,
             environ=environ
         )
+
+
+def test_overloaded_config(conffile, environ):
+    retval = crestic.main(["overloaded_config", "backup"], conffile=conffile, environ=environ)
+
+    subprocess.call.assert_called_once_with(
+        ['restic', 'backup', '--exclude-file', 'valid', '/home/user'],
+        env=os.environ,
+        shell=False,
+    )
