@@ -5,6 +5,7 @@ import re
 import sys
 import glob
 import argparse
+import warnings
 import subprocess
 import configparser
 
@@ -67,6 +68,19 @@ def pathexpand(val):
     return os.path.expanduser(os.path.expandvars(val))
 
 
+def splitlines(val):
+    """
+    str.splitlines() that is tolerant to empty strings and None values
+
+    """
+    if val == "":
+        return [None]
+    if val is None:
+        return [None]
+    else:
+        return val.splitlines()
+
+
 def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     if environ is None:
         environ = os.environ
@@ -100,7 +114,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     except AttributeError:
         python_args = parser.parse_args(argv)
 
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str  # dont map config keys to lower case
     conffile_read = config.read(conffile)
 
@@ -127,6 +141,13 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     sections_read = []
     for section in sections:
         try:
+            if "" in config[section].values():
+                warnings.warn(
+                    'The behaviour of empty config keys will change in 1.0.0! '
+                    'Please consult the documentation at https://nils-werner.github.io/crestic/config/options.html',
+                    DeprecationWarning,
+                )
+
             restic_options.update(**dict(config[section]))
             sections_read.append(section)
         except KeyError:
@@ -143,7 +164,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
             pass
 
     restic_options = {
-        k: v.splitlines() if v != "" else [""]
+        k: splitlines(v)
         for k, v in restic_options.items()
     }
 
@@ -169,17 +190,15 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     argstring = executable
     argstring.append(f"{python_args.command}")
     for key, lines in restic_options.items():
-        if lines is not None:
-            for value in lines:
-                if len(key) == 1:
-                    argstring.append(f"-{key}")
-                else:
-                    argstring.append(f"--{key}")
-                if value is not None:
-                    argstring.append(f"{value}")
+        for value in lines:
+            if len(key) == 1:
+                argstring.append(f"-{key}")
+            else:
+                argstring.append(f"--{key}")
+            if value is not None:
+                argstring.append(f"{value}")
     argstring += restic_arguments
 
-    argstring = [val for val in argstring if val != ""]
     argstring = [pathexpand(val) for val in argstring]
 
     if dryrun:

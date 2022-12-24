@@ -32,11 +32,13 @@ restic backup --exclude *.secret --exclude *.bin
 
 ## Option Switches
 
-To give an empty commandline option (a switch option), provide the word with an empty value:
+{% include notification.html message="This syntax was changed in version 0.7.0. Previously, a following colon was required." status="is-warning" %}
+
+To give an empty commandline option (a switch option), just provide the word without a following colon (`:`) or equal sign (`=`)
 
 ```conf
 [home.backup]
-verbose:
+verbose
 ```
 
 is mapped to

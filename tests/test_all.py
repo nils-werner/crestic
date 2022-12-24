@@ -98,6 +98,17 @@ def test_boolean(conffile, environ):
     )
 
 
+def test_emptystring(conffile, environ):
+    with pytest.deprecated_call():
+        crestic.main(["emptystring", "backup"], conffile=conffile, environ=environ)
+
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '--empty', '--noval', '/home/user'],
+        env=os.environ,
+    )
+
+
 def test_singlechar(conffile, environ):
     crestic.main(["singlechar", "backup"], conffile=conffile, environ=environ)
     os.execvpe.assert_called_once_with(
