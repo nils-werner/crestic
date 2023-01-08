@@ -1,0 +1,10 @@
+remote_theme: chrisrhymes/bulma-clean-theme
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: page
+      toc: true
+      show_sidebar: false
+      menubar: side_menu

@@ -1,0 +1,16 @@
+- label: Getting Started
+  items:
+    - name: Installation
+      link: /start/
+    - name: Debugging
+      link: /start/debugging.html
+- label: Configuration
+  items:
+    - name: Config Files
+      link: /config/
+    - name: Command Names
+      link: /config/commands.html
+    - name: Options Syntax
+      link: /config/options.html
+    - name: Automation
+      link: /config/automation.html
