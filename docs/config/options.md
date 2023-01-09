@@ -20,8 +20,7 @@ To give a commandline option more than once, use a multi line config value:
 
 ```conf
 [home.backup]
-exclude:
-   *.secret
+exclude: *.secret
    *.bin
 ```
 
