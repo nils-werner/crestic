@@ -5,6 +5,15 @@ subtitle: Configuration
 
 Crestic uses a distinct INI file syntax to that maps to special command line arguments:
 
+## Positional Arguments
+
+Positional arguments are given using the `arguments:` key:
+
+```conf
+[home.backup]
+arguments: ~
+```
+
 ## Repeating Options
 
 To give a commandline option more than once, use a multi line config value:
