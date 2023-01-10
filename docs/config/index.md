@@ -7,7 +7,7 @@ subtitle: Configuration
 
 The following locations are used in ascending order of importance. All files are read, and values in later files override values in earlier ones:
 
- 1. `/etc/crestic.cfg`
+ 1. `/etc/crestic/crestic.cfg`
  1. `~/.config/crestic/crestic.cfg`
  1. environment variable `$CRESTIC_CONFIG_PATHS`, a colon separated list of directories containing a file `crestic.cfg`
 
