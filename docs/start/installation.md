@@ -3,23 +3,25 @@ title: Installation
 subtitle: Getting Started
 ---
 
-## Installation
+## Requirements
 
-Just install it using `pip`
+Plain Python 3.6+ on a UNIX system. Nothing else.
+
+Python 3.7+ is required for certain arguments.
+
+## PIP
 
 ```shell
 pip install crestic
 ```
 
-or download `crestic` into your `$PATH`
+## Direct Download
 
 ```shell
 curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic.py --output ~/.local/bin/crestic
 chmod +x ~/.local/bin/crestic
 ```
 
-## Requirements
+## Arch Package
 
-Plain Python 3.6+ on a UNIX system. Nothing else.
-
-Python 3.7+ is required for certain arguments.
+ - [crestic on AUR](https://aur.archlinux.org/packages/crestic)
