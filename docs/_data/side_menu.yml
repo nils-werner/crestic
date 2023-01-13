@@ -1,16 +1,20 @@
 - label: Getting Started
   items:
     - name: Installation
-      link: /start/
+      link: /start/installation.html
     - name: Debugging
       link: /start/debugging.html
 - label: Configuration
   items:
     - name: Config Files
-      link: /config/
+      link: /config/files.html
     - name: Command Names
       link: /config/commands.html
     - name: Options Syntax
       link: /config/options.html
-    - name: Automation
-      link: /config/automation.html
+- label: Automation
+  items:
+    - name: Linux
+      link: /automation/linux.html
+    - name: MacOS
+      link: /automation/macos.html
