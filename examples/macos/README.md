@@ -6,4 +6,4 @@ For daily user backups using launchctl timers, i.e. for the `home@nas` preset, p
 launchctl load ~/Library/LaunchAgents/local.crestic.home@nas.plist
 ```
 
-For system backups, put this file in `/Library/LaunchAgents` and the config in `/etc/crestic.cfg`
+For system backups, put this file in `/Library/LaunchAgents` and the config in `/etc/crestic/config.cfg`

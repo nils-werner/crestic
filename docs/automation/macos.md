@@ -32,4 +32,4 @@ then activate the timer using
 launchctl load ~/Library/LaunchAgents/local.crestic.home@nas.plist
 ```
 
-For system backups, put this file in `/Library/LaunchAgents` and the config in `/etc/crestic/crestic.cfg`
+For system backups, put this file in `/Library/LaunchAgents` and the config in `/etc/crestic/config.cfg`
