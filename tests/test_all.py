@@ -8,6 +8,8 @@ import crestic
 
 import builtins
 
+testroot = os.path.dirname(__file__)
+
 
 @pytest.fixture(autouse=True)
 def clean_env(monkeypatch):
@@ -37,7 +39,7 @@ def mock_print(mocker):
 
 @pytest.fixture()
 def conffile():
-    return ['tests/config.ini', 'tests/overloading_config.ini']
+    return [testroot + '/config.ini', testroot + '/overloading_config.ini']
 
 
 @pytest.fixture(params=[True, False])
