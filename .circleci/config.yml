@@ -15,7 +15,7 @@ jobs:
         type: string
         default: latest
     docker:
-      - image: circleci/python:<< parameters.version >>
+      - image: cimg/python:<< parameters.version >>
     working_directory: ~/repo
     steps:
       - checkout
