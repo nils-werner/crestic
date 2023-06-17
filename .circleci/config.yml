@@ -3,11 +3,16 @@ workflows:
   test:
     jobs:
       - test:
-          version: "latest"
-      - test:
           version: "3.7"
       - test:
           version: "3.8"
+      - test:
+          version: "3.9"
+      - test:
+          version: "3.10"
+      - test:
+          version: "3.11"
+
 jobs:
   test:
     parameters:
@@ -21,18 +26,18 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "setup.cfg" }}
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "setup.cfg" }}
+            - v2-dependencies-
       - run:
           name: install dependencies
           command: |
-            python3 -m venv venv
+            python -m venv venv
             . venv/bin/activate
             pip install -e .[tests]
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "setup.cfg" }}
+          key: v2-dependencies-{{ checksum "setup.cfg" }}
       - run:
           name: run tests
           command: |
