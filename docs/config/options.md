@@ -48,3 +48,18 @@ is mapped to
 ```shell
 restic backup --verbose
 ```
+
+## Environment Settings
+
+{% include notification.html message="The `_cwd:` key was introduced in version 0.8.0." status="is-warning" %}
+
+Environment variables can be set using the `[preset.environ]` section.
+
+The key `_cwd:` can be used to set a working directory for the `restic` invocation.
+
+```conf
+[home.environ]
+_cwd: ~
+B2_ACCOUNT_ID: <MY_APPLICATION_KEY_ID>
+B2_ACCOUNT_KEY: <MY_APPLICATION_KEY>
+```

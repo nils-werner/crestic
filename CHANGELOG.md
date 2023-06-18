@@ -3,6 +3,7 @@
 ### Next Release
 
  - Deprecated `arguments:` in favor of `_args:`
+ - `_cwd:` parameter for setting a working directory
 
 ### `0.7.0`
 

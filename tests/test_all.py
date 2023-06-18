@@ -30,6 +30,7 @@ def clean_env(monkeypatch):
 @pytest.fixture(autouse=True)
 def mock_call(mocker):
     mocker.patch('os.execvpe')
+    mocker.patch('os.chdir')
 
 
 @pytest.fixture
@@ -264,7 +265,45 @@ def test_overloaded_config(conffile, environ):
 def test_deprecated_arguments(conffile, environ):
     with pytest.deprecated_call():
         crestic.main(["deprecated-arguments", "backup"], conffile=conffile, environ=environ)
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        env=os.environ,
+    )
 
+
+def test_cwd_config(conffile, environ):
+    retval = crestic.main(["cwd", "backup"], conffile=conffile, environ=environ)
+
+    os.chdir.assert_called_once_with(
+        '/foo/bar'
+    )
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        env=os.environ,
+    )
+
+
+def test_cwd2_config(conffile, environ):
+    retval = crestic.main(["cwd2", "backup"], conffile=conffile, environ=environ)
+
+    os.chdir.assert_called_once_with(
+        os.path.expandvars('$HOME') + '/foo/bar'
+    )
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        env=os.environ,
+    )
+
+
+def test_cwd3_config(conffile, environ):
+    retval = crestic.main(["cwd3", "backup"], conffile=conffile, environ=environ)
+
+    os.chdir.assert_called_once_with(
+        'foo'
+    )
     os.execvpe.assert_called_once_with(
         'restic',
         ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
