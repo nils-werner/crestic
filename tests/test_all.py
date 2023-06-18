@@ -259,3 +259,14 @@ def test_overloaded_config(conffile, environ):
         ['restic', 'backup', '--exclude-file', 'valid', '/home/user'],
         env=os.environ,
     )
+
+
+def test_deprecated_arguments(conffile, environ):
+    with pytest.deprecated_call():
+        crestic.main(["deprecated-arguments", "backup"], conffile=conffile, environ=environ)
+
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        env=os.environ,
+    )

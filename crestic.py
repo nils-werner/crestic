@@ -168,14 +168,21 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         for k, v in restic_options.items()
     }
 
+    try:
+        restic_options["_args"] = restic_options['arguments']
+        del restic_options['arguments']
+        warnings.warn("The use of the arguments: key is deprecated, please use _args: instead.", DeprecationWarning)
+    except KeyError:
+        pass
+
     # Override config arguments with arguments from CLI
     if python_args.arguments:
-        restic_options['arguments'] = python_args.arguments
+        restic_options['_args'] = python_args.arguments
 
     # Extract positional arguments from options dict
     try:
-        restic_arguments = restic_options['arguments']
-        del restic_options['arguments']
+        restic_arguments = restic_options['_args']
+        del restic_options['_args']
     except KeyError:
         restic_arguments = []
 

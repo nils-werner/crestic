@@ -33,7 +33,7 @@ password-file: ~/.config/restic/password
 
 [home.backup]
 exclude-file: ~/.config/restic/excludes
-arguments: ~
+_args: ~
 ```
 
 More advanced usage examples can be found [in the docs](https://nils-werner.github.io/crestic/)

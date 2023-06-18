@@ -7,11 +7,13 @@ Crestic uses a distinct INI file syntax to that maps to special command line arg
 
 ## Positional Arguments
 
-Positional arguments are given using the `arguments:` key:
+{% include notification.html message="This syntax was changed in version 0.8.0. Previously, the key was called `arguments:`" status="is-warning" %}
+
+Positional arguments are given using the `_args:` key:
 
 ```conf
 [home.backup]
-arguments: ~
+_args: ~
 ```
 
 ## Repeating Options

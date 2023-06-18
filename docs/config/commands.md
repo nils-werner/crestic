@@ -62,10 +62,10 @@ repo: sftp:your_server:my_computer.restic
 exclude-file: ~/.config/restic/excludes
 
 [home.backup]
-arguments: ~
+_args: ~
 
 [work.backup]
-arguments: ~/work
+_args: ~/work
 ```
 
 which can be used as `crestic home backup` and `crestic work backup`. Both commands back up using the same `password-file`, `repo`, and `exclude-file`, but different `argument`s (directories that are being backed up.)
@@ -87,10 +87,10 @@ To use these split presets, simply define location keys with an `@` suffix
 
 ```conf
 [home@.backup]
-arguments: ~
+_args: ~
 
 [work@.backup]
-arguments: ~/work
+_args: ~/work
 ```
 
 and repo keys with an `@` prefix
