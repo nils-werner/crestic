@@ -18,7 +18,7 @@ pip install crestic
 ## Direct Download
 
 ```shell
-curl https://raw.githubusercontent.com/nils-werner/crestic/master/crestic.py --output ~/.local/bin/crestic
+curl https://raw.githubusercontent.com/nils-werner/crestic/release/crestic.py --output ~/.local/bin/crestic
 chmod +x ~/.local/bin/crestic
 ```
 
