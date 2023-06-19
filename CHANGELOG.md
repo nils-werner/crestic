@@ -5,6 +5,7 @@
  - Deprecated `arguments:` in favor of `_arguments:`
  - `_workdir:` parameter for setting a working directory
  - `_command:` parameter for creating command aliases
+ - Enabled `ExtendedInterpolation`
 
 ### `0.7.0`
 

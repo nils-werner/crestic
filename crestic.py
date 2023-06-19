@@ -114,7 +114,10 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     except AttributeError:
         python_args = parser.parse_args(argv)
 
-    config = configparser.ConfigParser(allow_no_value=True)
+    config = configparser.ConfigParser(
+        allow_no_value=True,
+        interpolation=configparser.ExtendedInterpolation(),
+    )
     config.optionxform = str  # dont map config keys to lower case
     conffile_read = config.read(conffile)
 

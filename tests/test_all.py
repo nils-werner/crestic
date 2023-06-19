@@ -319,3 +319,23 @@ def test_command_config(conffile, environ):
         ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
         env=os.environ,
     )
+
+
+def test_interpolated_config(conffile, environ):
+    retval = crestic.main(["interpolated", "backup"], conffile=conffile, environ=environ)
+
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'valid', '--exclude-file', 'newfile', '/home/user'],
+        env=os.environ,
+    )
+
+
+def test_interpolation_envvar(conffile, environ):
+    retval = crestic.main(["interpolation-envvar", "backup"], conffile=conffile, environ=environ)
+
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', os.path.expandvars('$HOME')],
+        env=os.environ,
+    )
