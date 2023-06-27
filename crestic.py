@@ -171,7 +171,11 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     try:
         restic_options["_args"] = restic_options['arguments']
         del restic_options['arguments']
-        warnings.warn("The use of the arguments: key is deprecated, please use _args: instead.", DeprecationWarning)
+        warnings.warn(
+            "The use of the arguments: key is deprecated and will be removed in 1.0.0, please use _args: instead."
+            'Please consult the documentation at https://nils-werner.github.io/crestic/config/options.html',
+            DeprecationWarning
+        )
     except KeyError:
         pass
 
