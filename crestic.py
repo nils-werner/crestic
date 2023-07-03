@@ -237,7 +237,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         print("   Env sections used:", ", ".join(envsections_read))
         print("   Working directory:", workdir)
         print("    Expanded command:", " ".join(argstring))
-        return 0
+        return 1
     else:
         os.chdir(workdir)
         return os.execvpe(argstring[0], argstring, env=restic_environ)
