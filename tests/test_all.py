@@ -195,7 +195,7 @@ def test_dryrun(mock_print, dryrun, conffile, environ):
     os.execvpe.assert_not_called()
     builtins.print.assert_called_with(
         '    Expanded command:',
-        'restic backup --exclude-file bla /home/user'
+        '"restic" "backup" "--exclude-file" "bla" "/home/user"'
     )
     assert retval == 1
 

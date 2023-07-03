@@ -236,7 +236,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         print("        Env sections:", ", ".join(envsections))
         print("   Env sections used:", ", ".join(envsections_read))
         print("   Working directory:", workdir)
-        print("    Expanded command:", " ".join(argstring))
+        print("    Expanded command:", "\"" + ("\" \"".join(argstring)) + "\"")
         return 1
     else:
         os.chdir(workdir)
