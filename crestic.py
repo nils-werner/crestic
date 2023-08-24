@@ -198,6 +198,13 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         cwd = os.getcwd()
     cwd = pathexpand(cwd)
 
+    # Extract command overload
+    try:
+        python_args.command = restic_options['_cmd'][0]
+        del restic_options['_cmd']
+    except KeyError:
+        pass
+
     # Override config options with options from CLI
     python_args_dict = dict(vars(python_args))
     del python_args_dict['preset']

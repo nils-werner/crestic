@@ -63,3 +63,16 @@ _cwd: ~
 B2_ACCOUNT_ID: <MY_APPLICATION_KEY_ID>
 B2_ACCOUNT_KEY: <MY_APPLICATION_KEY>
 ```
+
+## Command Aliases
+
+{% include notification.html message="The `_cmd:` key was introduced in version 0.8.0." status="is-warning" %}
+
+You can define command aliases by using the `_cmd:` key, e.g.
+
+```conf
+[home.my_alias]
+_cmd: backup
+```
+
+will allow you to run `crestic home my_alias`, which is then mapped to `restic backup`.

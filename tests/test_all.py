@@ -309,3 +309,13 @@ def test_cwd3_config(conffile, environ):
         ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
         env=os.environ,
     )
+
+
+def test_cmd_config(conffile, environ):
+    retval = crestic.main(["cmd", "alias"], conffile=conffile, environ=environ)
+
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        env=os.environ,
+    )
