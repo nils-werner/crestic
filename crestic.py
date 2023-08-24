@@ -192,8 +192,8 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
 
     # Extract workdir from options dict
     try:
-        workdir = restic_environ['_workdir']
-        del restic_environ['_workdir']
+        workdir = restic_options['_workdir'][0]
+        del restic_options['_workdir']
     except KeyError:
         workdir = os.getcwd()
     workdir = pathexpand(workdir)

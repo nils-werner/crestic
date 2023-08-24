@@ -49,17 +49,12 @@ is mapped to
 restic backup --verbose
 ```
 
-## Environment Settings
-
-{% include notification.html message="The `_workdir:` key was introduced in version 0.8.0." status="is-warning" %}
+## Environment Variables
 
 Environment variables can be set using the `[preset.environ]` section.
 
-The key `_workdir:` can be used to set a working directory for the `restic` invocation.
-
 ```conf
 [home.environ]
-_workdir: ~
 B2_ACCOUNT_ID: <MY_APPLICATION_KEY_ID>
 B2_ACCOUNT_KEY: <MY_APPLICATION_KEY>
 ```
@@ -76,3 +71,18 @@ _command: backup
 ```
 
 will allow you to run `crestic home my_alias`, which is then mapped to `restic backup`.
+
+## Working Directory
+
+{% include notification.html message="The `_workdir:` key was introduced in version 0.8.0." status="is-warning" %}
+
+You can set a working directory using the `_workdir:` key, e.g.
+
+```conf
+[home.backup]
+_workdir: ~
+```
+
+which will cause `restic` to be run in that directory. All other paths will be relative to this directory.
+
+However, it is recommended to use absolute paths wherever possible because the backup path will be saved in the backup while the working directory does not. Using relative paths may then cause ambiguity and confusion.
