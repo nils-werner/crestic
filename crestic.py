@@ -169,10 +169,10 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     }
 
     try:
-        restic_options["_args"] = restic_options['arguments']
+        restic_options['_arguments'] = restic_options['arguments']
         del restic_options['arguments']
         warnings.warn(
-            "The use of the arguments: key is deprecated and will be removed in 1.0.0, please use _args: instead."
+            "The use of the arguments: key is deprecated and will be removed in 1.0.0, please use _arguments: instead."
             'Please consult the documentation at https://nils-werner.github.io/crestic/config/options.html',
             DeprecationWarning
         )
@@ -181,27 +181,27 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
 
     # Override config arguments with arguments from CLI
     if python_args.arguments:
-        restic_options['_args'] = python_args.arguments
+        restic_options['_arguments'] = python_args.arguments
 
     # Extract positional arguments from options dict
     try:
-        restic_arguments = restic_options['_args']
-        del restic_options['_args']
+        restic_arguments = restic_options['_arguments']
+        del restic_options['_arguments']
     except KeyError:
         restic_arguments = []
 
-    # Extract cwd from options dict
+    # Extract workdir from options dict
     try:
-        cwd = restic_environ['_cwd']
-        del restic_environ['_cwd']
+        workdir = restic_environ['_workdir']
+        del restic_environ['_workdir']
     except KeyError:
-        cwd = os.getcwd()
-    cwd = pathexpand(cwd)
+        workdir = os.getcwd()
+    workdir = pathexpand(workdir)
 
     # Extract command overload
     try:
-        python_args.command = restic_options['_cmd'][0]
-        del restic_options['_cmd']
+        python_args.command = restic_options['_command'][0]
+        del restic_options['_command']
     except KeyError:
         pass
 
@@ -235,11 +235,11 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         print("Config sections used:", ", ".join(sections_read))
         print("        Env sections:", ", ".join(envsections))
         print("   Env sections used:", ", ".join(envsections_read))
-        print("   Working directory:", cwd)
+        print("   Working directory:", workdir)
         print("    Expanded command:", " ".join(argstring))
         return 0
     else:
-        os.chdir(cwd)
+        os.chdir(workdir)
         return os.execvpe(argstring[0], argstring, env=restic_environ)
 
 

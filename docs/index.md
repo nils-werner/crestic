@@ -36,5 +36,5 @@ password-file: ~/.config/restic/password
 
 [home.backup]
 exclude-file: ~/.config/restic/excludes
-_args: ~
+_arguments: ~
 ```

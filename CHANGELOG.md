@@ -2,9 +2,9 @@
 
 ### Next Release
 
- - Deprecated `arguments:` in favor of `_args:`
- - `_cwd:` parameter for setting a working directory
- - `_cmd:` parameter for creating command aliases
+ - Deprecated `arguments:` in favor of `_arguments:`
+ - `_workdir:` parameter for setting a working directory
+ - `_command:` parameter for creating command aliases
 
 ### `0.7.0`
 

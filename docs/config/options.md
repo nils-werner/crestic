@@ -9,11 +9,11 @@ Crestic uses a distinct INI file syntax to that maps to special command line arg
 
 {% include notification.html message="This syntax was changed in version 0.8.0. Previously, the key was called `arguments:`" status="is-warning" %}
 
-Positional arguments are given using the `_args:` key:
+Positional arguments are given using the `_arguments:` key:
 
 ```conf
 [home.backup]
-_args: ~
+_arguments: ~
 ```
 
 ## Repeating Options
@@ -51,28 +51,28 @@ restic backup --verbose
 
 ## Environment Settings
 
-{% include notification.html message="The `_cwd:` key was introduced in version 0.8.0." status="is-warning" %}
+{% include notification.html message="The `_workdir:` key was introduced in version 0.8.0." status="is-warning" %}
 
 Environment variables can be set using the `[preset.environ]` section.
 
-The key `_cwd:` can be used to set a working directory for the `restic` invocation.
+The key `_workdir:` can be used to set a working directory for the `restic` invocation.
 
 ```conf
 [home.environ]
-_cwd: ~
+_workdir: ~
 B2_ACCOUNT_ID: <MY_APPLICATION_KEY_ID>
 B2_ACCOUNT_KEY: <MY_APPLICATION_KEY>
 ```
 
 ## Command Aliases
 
-{% include notification.html message="The `_cmd:` key was introduced in version 0.8.0." status="is-warning" %}
+{% include notification.html message="The `_command:` key was introduced in version 0.8.0." status="is-warning" %}
 
-You can define command aliases by using the `_cmd:` key, e.g.
+You can define command aliases by using the `_command:` key, e.g.
 
 ```conf
 [home.my_alias]
-_cmd: backup
+_command: backup
 ```
 
 will allow you to run `crestic home my_alias`, which is then mapped to `restic backup`.

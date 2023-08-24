@@ -272,8 +272,8 @@ def test_deprecated_arguments(conffile, environ):
     )
 
 
-def test_cwd_config(conffile, environ):
-    retval = crestic.main(["cwd", "backup"], conffile=conffile, environ=environ)
+def test_workdir_config(conffile, environ):
+    retval = crestic.main(["workdir", "backup"], conffile=conffile, environ=environ)
 
     os.chdir.assert_called_once_with(
         '/foo/bar'
@@ -285,8 +285,8 @@ def test_cwd_config(conffile, environ):
     )
 
 
-def test_cwd2_config(conffile, environ):
-    retval = crestic.main(["cwd2", "backup"], conffile=conffile, environ=environ)
+def test_workdir2_config(conffile, environ):
+    retval = crestic.main(["workdir2", "backup"], conffile=conffile, environ=environ)
 
     os.chdir.assert_called_once_with(
         os.path.expandvars('$HOME') + '/foo/bar'
@@ -298,8 +298,8 @@ def test_cwd2_config(conffile, environ):
     )
 
 
-def test_cwd3_config(conffile, environ):
-    retval = crestic.main(["cwd3", "backup"], conffile=conffile, environ=environ)
+def test_workdir3_config(conffile, environ):
+    retval = crestic.main(["workdir3", "backup"], conffile=conffile, environ=environ)
 
     os.chdir.assert_called_once_with(
         'foo'
@@ -311,8 +311,8 @@ def test_cwd3_config(conffile, environ):
     )
 
 
-def test_cmd_config(conffile, environ):
-    retval = crestic.main(["cmd", "alias"], conffile=conffile, environ=environ)
+def test_command_config(conffile, environ):
+    retval = crestic.main(["command", "alias"], conffile=conffile, environ=environ)
 
     os.execvpe.assert_called_once_with(
         'restic',
