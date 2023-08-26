@@ -179,6 +179,8 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     except KeyError:
         pass
 
+    command = python_args.command
+
     # Override config arguments with arguments from CLI
     if python_args.arguments:
         restic_options['_arguments'] = python_args.arguments
@@ -200,7 +202,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
 
     # Extract command overload
     try:
-        python_args.command = restic_options['_command'][0]
+        command = restic_options['_command'][0]
         del restic_options['_command']
     except KeyError:
         pass
@@ -214,7 +216,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
 
     # Construct command
     argstring = executable
-    argstring.append(f"{python_args.command}")
+    argstring.append(f"{command}")
     for key, lines in restic_options.items():
         for value in lines:
             if len(key) == 1:
