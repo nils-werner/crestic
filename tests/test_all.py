@@ -40,7 +40,7 @@ def mock_print(mocker):
 
 @pytest.fixture()
 def conffile():
-    return [testroot + '/config.ini', testroot + '/overloading_config.ini']
+    return [testroot + '/crestic.cfg', testroot + '/overloading.cfg']
 
 
 @pytest.fixture(params=[True, False])
