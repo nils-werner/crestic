@@ -2,6 +2,8 @@
 
 ### Next Release
 
+### `0.8.0`
+
  - Deprecated `arguments:` in favor of `_arguments:`
  - `_workdir:` parameter for setting a working directory
  - `_command:` parameter for creating command aliases
