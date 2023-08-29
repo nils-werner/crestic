@@ -24,6 +24,8 @@ def test_valid_preset():
         crestic.valid_preset("home@")
     with pytest.raises(argparse.ArgumentTypeError):
         crestic.valid_preset("@")
+    with pytest.raises(argparse.ArgumentTypeError):
+        crestic.valid_preset("home@nas@cloud")
 
 
 def test_splitlines():
