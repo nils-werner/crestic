@@ -19,11 +19,12 @@ will print
 
 ```
              Warning: Executing in debug mode. restic will not run, backups are not touched!
-        Config files: examples/multiple_presets.cfg
-   Config files used: examples/multiple_presets.cfg
+        Config files: /usr/share/crestic/config.cfg, /etc/crestic/config.cfg, /home/user/.config/crestic/config.cfg
+   Config files used: /home/user/.config/crestic/config.cfg
      Config sections: global, global.backup, home, home.backup
 Config sections used: global, global.backup
         Env sections: global.environ, global.backup.environ, home.environ, home.backup.environ
    Env sections used:
-    Expanded command: restic backup --password-file ~/.config/restic/password --exclude-file ~/.config/restic/excludes --exclude config.py --exclude passwords.txt
+   Working directory: /home/user
+    Expanded command: "restic" "backup" "--password-file" "/home/user/.config/restic/password" "--exclude-file" "/home/user/.config/restic/excludes" "--exclude" "config.py" "--exclude" "passwords.txt" "/home/user"
 ```

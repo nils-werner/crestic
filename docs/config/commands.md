@@ -1,5 +1,5 @@
 ---
-title: Command Names
+title: Commands and Presets
 subtitle: Configuration
 ---
 
@@ -32,7 +32,7 @@ where `preset` and `command` are the preset and command names from above. For ex
 
 are read for `crestic home backup` calls.
 
-## Special Keys
+## Special Presets
 
 There exist a few special config keys:
 
@@ -49,7 +49,7 @@ Config keys are always read in the following order, of ascending importance. Lat
  1. options from the commandline
 
 
-## Mixing Keys
+## Mixing Presets
 
 `crestic` allows multiple presets per config file. For example you can define a config file
 
@@ -70,11 +70,11 @@ _arguments: ~/work
 
 which can be used as `crestic home backup` and `crestic work backup`. Both commands back up using the same `password-file`, `repo`, and `exclude-file`, but different `argument`s (directories that are being backed up.)
 
-## Split Keys
+## Split Presets
 
 `crestic` allows for so-called *split presets*. These split presets are in the format of `prefix@suffix` and are usually used to separate local location values from remote repo locations, i.e. `location@repo`.
 
-Using this techique you can back up several locations on your machine to several remote repositories, i.e. the locations `home` and `work` to the repos `disk` and `cloud`
+Using this technique you can back up several locations on your machine to several remote repositories, i.e. the locations `home` and `work` to the repos `disk` and `cloud`
 
 ```shell
 crestic home@disk backup
@@ -83,7 +83,7 @@ crestic work@disk backup
 crestic work@cloud backup
 ```
 
-To use these split presets, simply define location keys with an `@` suffix
+To use these split presets, simply define location keys with an `@` suffix and repo keys with an `@` prefix
 
 ```conf
 [home@.backup]
@@ -91,11 +91,7 @@ _arguments: ~
 
 [work@.backup]
 _arguments: ~/work
-```
 
-and repo keys with an `@` prefix
-
-```conf
 [@disk]
 repo: /Volumes/Backup
 
