@@ -7,7 +7,7 @@ Crestic uses a distinct INI file syntax to that maps to special command line arg
 
 ## Option Arguments
 
-To give an empty commandline option argument, just provide the option keyword and value.
+To give a commandline option argument, just provide the option keyword and value.
 
 ```conf
 [home.backup]
@@ -17,7 +17,7 @@ exclude: *.secret
 is mapped to
 
 ```shell
-restic backup --exclude: *.secret
+restic backup --exclude *.secret
 ```
 
 ## Positional Arguments

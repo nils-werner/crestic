@@ -8,9 +8,9 @@
   items:
     - name: Config Files
       link: /config/files.html
-    - name: Command Names
+    - name: Commands and Presets
       link: /config/commands.html
-    - name: Options Syntax
+    - name: Options and Parameters
       link: /config/options.html
 - label: Automation
   items:
