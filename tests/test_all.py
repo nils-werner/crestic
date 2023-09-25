@@ -13,18 +13,11 @@ testroot = os.path.dirname(__file__)
 
 @pytest.fixture(autouse=True)
 def clean_env(monkeypatch):
-    try:
-        monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_FILE')
-    except KeyError:
-        pass
-    try:
-        monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_PATHS')
-    except KeyError:
-        pass
-    try:
-        monkeypatch.delitem(os.environ, 'CRESTIC_DRYRUN')
-    except KeyError:
-        pass
+    monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_FILE', raising=False)
+    monkeypatch.delitem(os.environ, 'CRESTIC_CONFIG_PATHS', raising=False)
+    monkeypatch.delitem(os.environ, 'CRESTIC_DRYRUN', raising=False)
+    monkeypatch.delitem(os.environ, 'B2_ACCOUNT_ID', raising=False)
+    monkeypatch.delitem(os.environ, 'B2_ACCOUNT_KEY', raising=False)
 
 
 @pytest.fixture(autouse=True)
