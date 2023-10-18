@@ -64,6 +64,23 @@ is mapped to
 restic backup --verbose
 ```
 
+## Empty String Options
+
+{% include notification.html message="This behaviour was added in version 1.0.0. Previously this syntax resulted in an option switch." status="is-warning" %}
+
+To give an empty string (`""`) commandline option, provide the word with an empty value:
+
+```conf
+[home.backup]
+group-by:
+```
+
+is mapped to
+
+```shell
+restic backup --group-by ''
+```
+
 ## Environment Variables
 
 Environment variables can be set using the `[preset.environ]` section.

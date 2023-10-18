@@ -74,7 +74,7 @@ def splitlines(val):
 
     """
     if val == "":
-        return [None]
+        return [""]
     if val is None:
         return [None]
     else:
@@ -144,13 +144,6 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     sections_read = []
     for section in sections:
         try:
-            if "" in config[section].values():
-                warnings.warn(
-                    'The behaviour of empty config keys will change in 1.0.0! '
-                    'Please consult the documentation at https://nils-werner.github.io/crestic/config/options.html',
-                    DeprecationWarning,
-                )
-
             restic_options.update(dict(config[section]))
             sections_read.append(section)
         except KeyError:
@@ -170,17 +163,6 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         k: splitlines(v)
         for k, v in restic_options.items()
     }
-
-    try:
-        restic_options['_arguments'] = restic_options['arguments']
-        del restic_options['arguments']
-        warnings.warn(
-            "The use of the arguments: key is deprecated and will be removed in 1.0.0, please use _arguments: instead."
-            'Please consult the documentation at https://nils-werner.github.io/crestic/config/options.html',
-            DeprecationWarning
-        )
-    except KeyError:
-        pass
 
     command = python_args.command
 

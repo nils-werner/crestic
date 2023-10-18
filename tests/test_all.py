@@ -93,12 +93,11 @@ def test_boolean(conffile, environ):
 
 
 def test_emptystring(conffile, environ):
-    with pytest.deprecated_call():
-        crestic.main(["emptystring", "backup"], conffile=conffile, environ=environ)
+    crestic.main(["emptystring", "backup"], conffile=conffile, environ=environ)
 
     os.execvpe.assert_called_once_with(
         'restic',
-        ['restic', 'backup', '--exclude-file', 'bla', '--empty', '--noval', '/home/user'],
+        ['restic', 'backup', '--exclude-file', 'bla', '--empty', '', '--noval', '/home/user'],
         env=os.environ,
     )
 
@@ -277,11 +276,14 @@ def test_overloaded_config(conffile, environ):
 
 
 def test_deprecated_arguments(conffile, environ):
-    with pytest.deprecated_call():
-        crestic.main(["deprecated-arguments", "backup"], conffile=conffile, environ=environ)
+    """ The use of arguments: is invalid now, this test reproduces the resulting broken behaviour
+
+    Use _arguments: instead.
+    """
+    crestic.main(["deprecated-arguments", "backup"], conffile=conffile, environ=environ)
     os.execvpe.assert_called_once_with(
         'restic',
-        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        ['restic', 'backup', '--exclude-file', 'bla', '--arguments', '/home/user', '/home/user'],
         env=os.environ,
     )
 

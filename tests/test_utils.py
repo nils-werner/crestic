@@ -30,7 +30,7 @@ def test_valid_preset():
 
 def test_splitlines():
     assert crestic.splitlines(None) == [None]
-    assert crestic.splitlines("") == [None]
+    assert crestic.splitlines("") == [""]
     assert crestic.splitlines("a\nb") == ["a", "b"]
     assert crestic.splitlines("\na\nb") == ["", "a", "b"]
     assert crestic.splitlines("\n\na\nb") == ["", "", "a", "b"]
