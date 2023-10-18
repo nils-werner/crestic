@@ -2,6 +2,8 @@
 
 ### Next Release
 
+ - Enabled environment variable expansion in `[.environ]` sections (#36)
+
 ### `0.8.0`
 
  - Deprecated `arguments:` in favor of `_arguments:`
