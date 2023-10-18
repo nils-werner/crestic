@@ -182,6 +182,27 @@ def test_environ(conffile, environ):
     )
 
 
+@pytest.fixture
+def environ_testkey(monkeypatch):
+    monkeypatch.setitem(os.environ, 'TESTKEY', "asd")
+
+
+def test_environ_expand(conffile, environ_testkey, environ, monkeypatch):
+    crestic.main(["environ_expand", "backup"], conffile=conffile, environ=environ)
+
+    environ = dict(os.environ)
+    environ.update({
+        'B2_ACCOUNT_ID': 'testid',
+        'B2_ACCOUNT_KEY': 'asd',
+    })
+
+    os.execvpe.assert_called_once_with(
+        'restic',
+        ['restic', 'backup', '--exclude-file', 'bla', '/home/user'],
+        env=environ,
+    )
+
+
 def test_dryrun(mock_print, dryrun, conffile, environ):
     retval = crestic.main(["environ", "backup"], dryrun=dryrun, conffile=conffile, environ=environ)
 
