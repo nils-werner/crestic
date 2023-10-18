@@ -151,7 +151,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
                     DeprecationWarning,
                 )
 
-            restic_options.update(**dict(config[section]))
+            restic_options.update(dict(config[section]))
             sections_read.append(section)
         except KeyError:
             pass
@@ -161,7 +161,7 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     envsections_read = []
     for envsection in envsections:
         try:
-            restic_environ.update(**{k: pathexpand(v) for k, v in dict(config[envsection]).items()})
+            restic_environ.update({k: pathexpand(v) for k, v in dict(config[envsection]).items()})
             envsections_read.append(envsection)
         except KeyError:
             pass
