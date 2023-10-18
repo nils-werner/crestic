@@ -2,6 +2,8 @@
 
 ### Next Release
 
+### `1.0.0`
+
  - Changed behaviour of old `--switch` syntax (`empty:` with a following colon) to new `--empty ''` behaviour (#30)
  - Removed `arguments:` key
  - Enabled environment variable expansion in `[.environ]` sections (#36)
