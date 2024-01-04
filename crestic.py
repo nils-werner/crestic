@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# mypy: disallow-untyped-defs
+
 import os
 import re
 import sys
@@ -10,27 +12,25 @@ import subprocess
 import configparser
 
 
-def config_files(environ=None):
+def config_files(environ: None | dict[str, str] = None) -> list[str]:
     if environ is None:
         environ = {}
 
     # Lowest priority: hardcoded values
-    paths = [
-        '/usr/share/crestic/config.cfg',
-        *sorted(glob.glob('/usr/share/crestic/conf.d/*.cfg')),
-
-        '/etc/crestic/config.cfg',
-        *sorted(glob.glob('/etc/crestic/conf.d/*.cfg')),
-
-        pathexpand('~/.config/crestic/config.cfg'),
-        *sorted(glob.glob(pathexpand('~/.config/crestic/conf.d/*.cfg'))),
+    paths: list[str] = [
+        "/usr/share/crestic/config.cfg",
+        *sorted(glob.glob("/usr/share/crestic/conf.d/*.cfg")),
+        "/etc/crestic/config.cfg",
+        *sorted(glob.glob("/etc/crestic/conf.d/*.cfg")),
+        pathexpand("~/.config/crestic/config.cfg"),
+        *sorted(glob.glob(pathexpand("~/.config/crestic/conf.d/*.cfg"))),
     ]
 
     # Medium priority: CRESTIC_CONFIG_PATHS
     try:
         paths = paths + [
             f
-            for d in environ['CRESTIC_CONFIG_PATHS'].split(os.pathsep)
+            for d in environ["CRESTIC_CONFIG_PATHS"].split(os.pathsep)
             for f in sorted(glob.glob(pathexpand(d)))
         ]
     except KeyError:
@@ -38,14 +38,14 @@ def config_files(environ=None):
 
     # High priority: CRESTIC_CONFIG_FILE, dropping the rest
     try:
-        paths = [environ['CRESTIC_CONFIG_FILE']]
+        paths = [environ["CRESTIC_CONFIG_FILE"]]
     except KeyError:
         pass
 
     return paths
 
 
-def split(string, delimiter="@", maxsplit=1):
+def split(string: str, delimiter: str = "@", maxsplit: int = 1) -> list[str]:
     """
     Split a string using a delimiter string. But keep the delimiter in all returned segments
 
@@ -56,19 +56,20 @@ def split(string, delimiter="@", maxsplit=1):
     return splits
 
 
-def valid_preset(value):
+def valid_preset(value: str) -> str:
     if not re.match(r"^[^@]+(@[^@]+)?$", value):
         raise argparse.ArgumentTypeError(
-            "%s is an invalid preset name, only preset names in the format of name[@suffix] are allowed." % value
+            "%s is an invalid preset name, only preset names in the format of name[@suffix] are allowed."
+            % value
         )
     return value
 
 
-def pathexpand(val):
+def pathexpand(val: str) -> str:
     return os.path.expanduser(os.path.expandvars(val))
 
 
-def splitlines(val):
+def splitlines(val: str) -> list[str]:
     """
     str.splitlines() that is tolerant to empty strings and None values
 
@@ -81,18 +82,24 @@ def splitlines(val):
         return val.splitlines()
 
 
-def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
+def main(
+    argv: list[str],
+    environ: None | os._Environ[str] = None,
+    conffile: None | list[str] = None,
+    dryrun: None | bool = None,
+    executable: None | str = None,
+) -> int:
     if environ is None:
         environ = os.environ
 
     if conffile is None:
-        conffile = config_files(environ)
+        conffile = config_files(dict(environ))
 
     if dryrun is None:
-        dryrun = environ.get("CRESTIC_DRYRUN", False)
+        dryrun = bool(environ.get("CRESTIC_DRYRUN", False))
 
     if executable is None:
-        executable = environ.get("CRESTIC_EXECUTABLE", "restic").split()
+        executable = environ.get("CRESTIC_EXECUTABLE", "restic")
 
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?", type=valid_preset)
@@ -102,7 +109,9 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     for arg in argv:
         if arg.startswith(("-", "--")) and arg != "--":
             try:
-                parser.add_argument(arg, nargs='?', action='append', dest=arg.lstrip("-"))
+                parser.add_argument(
+                    arg, nargs="?", action="append", dest=arg.lstrip("-")
+                )
             except argparse.ArgumentError:
                 pass
 
@@ -118,7 +127,8 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         allow_no_value=True,
         interpolation=configparser.ExtendedInterpolation(),
     )
-    config.optionxform = str  # dont map config keys to lower case
+    # dont map config keys to lower case
+    config.optionxform = str  # type: ignore
     conffile_read = config.read(conffile)
 
     sections = [
@@ -154,55 +164,56 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     envsections_read = []
     for envsection in envsections:
         try:
-            restic_environ.update({k: pathexpand(v) for k, v in dict(config[envsection]).items()})
+            restic_environ.update(
+                {k: pathexpand(v) for k, v in dict(config[envsection]).items()}
+            )
             envsections_read.append(envsection)
         except KeyError:
             pass
 
-    restic_options = {
-        k: splitlines(v)
-        for k, v in restic_options.items()
+    restic_options_split = {
+        k: splitlines(v) for k, v in restic_options.items()
     }
 
     command = python_args.command
 
     # Override config arguments with arguments from CLI
     if python_args.arguments:
-        restic_options['_arguments'] = python_args.arguments
+        restic_options_split["_arguments"] = python_args.arguments
 
     # Extract positional arguments from options dict
     try:
-        restic_arguments = restic_options['_arguments']
-        del restic_options['_arguments']
+        restic_arguments = restic_options_split["_arguments"]
+        del restic_options_split["_arguments"]
     except KeyError:
         restic_arguments = []
 
     # Extract workdir from options dict
     try:
-        workdir = restic_options['_workdir'][0]
-        del restic_options['_workdir']
+        workdir = restic_options_split["_workdir"][0]
+        del restic_options_split["_workdir"]
     except KeyError:
         workdir = os.getcwd()
     workdir = pathexpand(workdir)
 
     # Extract command overload
     try:
-        command = restic_options['_command'][0]
-        del restic_options['_command']
+        command = restic_options_split["_command"][0]
+        del restic_options_split["_command"]
     except KeyError:
         pass
 
     # Override config options with options from CLI
     python_args_dict = dict(vars(python_args))
-    del python_args_dict['preset']
-    del python_args_dict['command']
-    del python_args_dict['arguments']
-    restic_options.update(python_args_dict)
+    del python_args_dict["preset"]
+    del python_args_dict["command"]
+    del python_args_dict["arguments"]
+    restic_options_split.update(python_args_dict)
 
     # Construct command
-    argstring = executable
+    argstring = [executable]
     argstring.append(f"{command}")
-    for key, lines in restic_options.items():
+    for key, lines in restic_options_split.items():
         for value in lines:
             if len(key) == 1:
                 argstring.append(f"-{key}")
@@ -215,7 +226,10 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
     argstring = [pathexpand(val) for val in argstring]
 
     if dryrun:
-        print("             Warning:", "Executing in debug mode. restic will not run, backups are not touched!")
+        print(
+            "             Warning:",
+            "Executing in debug mode. restic will not run, backups are not touched!",
+        )
         print("        Config files:", ", ".join(conffile))
         print("   Config files used:", ", ".join(conffile_read))
         print("     Config sections:", ", ".join(sections))
@@ -223,14 +237,14 @@ def main(argv, environ=None, conffile=None, dryrun=None, executable=None):
         print("        Env sections:", ", ".join(envsections))
         print("   Env sections used:", ", ".join(envsections_read))
         print("   Working directory:", workdir)
-        print("    Expanded command:", "\"" + ("\" \"".join(argstring)) + "\"")
+        print("    Expanded command:", '"' + ('" "'.join(argstring)) + '"')
         return 1
     else:
         os.chdir(workdir)
         return os.execvpe(argstring[0], argstring, env=restic_environ)
 
 
-def cli():
+def cli() -> int:
     return main(sys.argv[1:])
 
 
