@@ -11,13 +11,15 @@ import warnings
 import subprocess
 import configparser
 
+from typing import Optional, Dict, List
 
-def config_files(environ: None | dict[str, str] = None) -> list[str]:
+
+def config_files(environ: Optional[Dict[str, str]] = None) -> List[str]:
     if environ is None:
         environ = {}
 
     # Lowest priority: hardcoded values
-    paths: list[str] = [
+    paths = [
         "/usr/share/crestic/config.cfg",
         *sorted(glob.glob("/usr/share/crestic/conf.d/*.cfg")),
         "/etc/crestic/config.cfg",
@@ -45,7 +47,7 @@ def config_files(environ: None | dict[str, str] = None) -> list[str]:
     return paths
 
 
-def split(string: str, delimiter: str = "@", maxsplit: int = 1) -> list[str]:
+def split(string: str, delimiter: str = "@", maxsplit: int = 1) -> List[str]:
     """
     Split a string using a delimiter string. But keep the delimiter in all returned segments
 
@@ -69,7 +71,7 @@ def pathexpand(val: str) -> str:
     return os.path.expanduser(os.path.expandvars(val))
 
 
-def splitlines(val: str) -> list[str]:
+def splitlines(val: str) -> List[str]:
     """
     str.splitlines() that is tolerant to empty strings and None values
 
@@ -83,11 +85,11 @@ def splitlines(val: str) -> list[str]:
 
 
 def main(
-    argv: list[str],
-    environ: None | os._Environ[str] = None,
-    conffile: None | list[str] = None,
-    dryrun: None | bool = None,
-    executable: None | str = None,
+    argv: List[str],
+    environ: Optional[os._Environ[str]] = None,
+    conffile: Optional[List[str]] = None,
+    dryrun: Optional[bool] = None,
+    executable: Optional[str] = None,
 ) -> int:
     if environ is None:
         environ = os.environ
