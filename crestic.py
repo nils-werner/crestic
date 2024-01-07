@@ -86,7 +86,7 @@ def splitlines(val: str) -> List[str]:
 
 def main(
     argv: List[str],
-    environ: Optional[os._Environ[str]] = None,
+    environ: Optional[os._Environ] = None,
     conffile: Optional[List[str]] = None,
     dryrun: Optional[bool] = None,
     executable: Optional[str] = None,
