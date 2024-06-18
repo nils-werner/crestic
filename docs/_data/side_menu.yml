@@ -12,6 +12,8 @@
       link: /config/commands.html
     - name: Options and Parameters
       link: /config/options.html
+    - name: Examples
+      link: /config/examples.html
 - label: Automation
   items:
     - name: Linux
