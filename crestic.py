@@ -130,6 +130,11 @@ def main(
     # dont map config keys to lower case
     config.optionxform = str  # type: ignore
     conffile_read = config.read(conffile)
+    if not config.sections():
+        print("crestic: no valid config sections found in file(s):", file=sys.stderr)
+        for path in conffile_read or conffile:
+            print(f"    {path}", file=sys.stderr)
+        return 1
 
     sections = [
         "global",

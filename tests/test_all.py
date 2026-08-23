@@ -64,6 +64,24 @@ def mock_parse_intermixed_args(request, monkeypatch):
     return request.param
 
 
+def test_no_config_file(mock_print, environ):
+    missing_cfg = ["/nonexistent/crestic/config.cfg"]
+    assert crestic.main(["plain", "backup"], conffile=missing_cfg, environ=environ) == 1
+
+    os.execvpe.assert_not_called()
+    builtins.print.assert_any_call(f"    {missing_cfg[0]}", file=sys.stderr)
+
+
+def test_config_without_sections(mock_print, environ):
+    nosections_cfg = [testroot + "/nosections.cfg"]
+    assert (
+        crestic.main(["plain", "backup"], conffile=nosections_cfg, environ=environ) == 1
+    )
+
+    os.execvpe.assert_not_called()
+    builtins.print.assert_any_call(f"    {nosections_cfg[0]}", file=sys.stderr)
+
+
 def test_plain_backup(conffile, environ):
     crestic.main(["plain", "backup"], conffile=conffile, environ=environ)
     os.execvpe.assert_called_once_with(
