@@ -2,14 +2,13 @@
 
 # mypy: disallow-untyped-defs
 
+import argparse
+import configparser
+import glob
 import os
 import re
 import sys
-import glob
-import argparse
-import configparser
-
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
 
 
 def config_files(environ: Optional[Dict[str, str]] = None) -> List[str]:
