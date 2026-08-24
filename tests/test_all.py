@@ -2,9 +2,8 @@ import os
 import sys
 
 import pytest
-import crestic
 
-import builtins
+import crestic
 
 testroot = os.path.dirname(__file__)
 
@@ -25,8 +24,8 @@ def mock_call(mocker):
 
 
 @pytest.fixture
-def mock_print(mocker):
-    mocker.patch("builtins.print")
+def mock_logger(mocker):
+    mocker.patch("crestic.logger")
 
 
 @pytest.fixture()
@@ -238,19 +237,20 @@ def test_environ_expand(conffile, environ_testkey, environ, monkeypatch):
     )
 
 
-def test_dryrun(mock_print, dryrun, conffile, environ):
+def test_dryrun(mock_logger, dryrun, conffile, environ):
     retval = crestic.main(
         ["environ", "backup"], dryrun=dryrun, conffile=conffile, environ=environ
     )
 
     os.execvpe.assert_not_called()
-    builtins.print.assert_called_with(
-        "    Expanded command:", '"restic" "backup" "--exclude-file" "bla" "/home/user"'
+    crestic.logger.info.assert_called_with(
+        "    Expanded command: "
+        + '"restic" "backup" "--exclude-file" "bla" "/home/user"'
     )
     assert retval == 1
 
 
-def test_invalid(mock_print):
+def test_invalid(mock_logger):
     with pytest.raises(SystemExit):
         crestic.main(["@nas", "backup"])
 

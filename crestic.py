@@ -5,10 +5,14 @@
 import argparse
 import configparser
 import glob
+import logging
 import os
 import re
 import sys
 from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(format="%(levelname)8s: %(message)s", level=logging.INFO)
 
 
 def config_files(environ: Optional[Dict[str, str]] = None) -> List[str]:
@@ -223,20 +227,19 @@ def main(
     argstring = [pathexpand(val) for val in argstring]
 
     if dryrun:
-        print(
-            "             Warning:",
+        logger.warning(
             "Executing in debug mode. restic will not run, backups are not touched!",
         )
-        print("  Crestic executable:", sys.argv[0])
-        print("   Python executable:", sys.executable)
-        print("        Config files:", ", ".join(conffile))
-        print("   Config files used:", ", ".join(conffile_read))
-        print("     Config sections:", ", ".join(sections))
-        print("Config sections used:", ", ".join(sections_read))
-        print("        Env sections:", ", ".join(envsections))
-        print("   Env sections used:", ", ".join(envsections_read))
-        print("   Working directory:", workdir)
-        print("    Expanded command:", '"' + ('" "'.join(argstring)) + '"')
+        logger.info("  Crestic executable: " + sys.argv[0])
+        logger.info("   Python executable: " + sys.executable)
+        logger.info("        Config files: " + ", ".join(conffile))
+        logger.info("   Config files used: " + ", ".join(conffile_read))
+        logger.info("     Config sections: " + ", ".join(sections))
+        logger.info("Config sections used: " + ", ".join(sections_read))
+        logger.info("        Env sections: " + ", ".join(envsections))
+        logger.info("   Env sections used: " + ", ".join(envsections_read))
+        logger.info("   Working directory: " + workdir)
+        logger.info("    Expanded command: " + '"' + ('" "'.join(argstring)) + '"')
         return 1
     else:
         os.chdir(workdir)
