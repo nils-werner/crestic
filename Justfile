@@ -1,5 +1,5 @@
 test: test-pytest
-lint: lint-ruff lint-mypy
+lint: lint-ruff lint-mypy lint-pyrefly
 fmt: fmt-ruff lint-ruff-fix
 pre-publish: clean sync fmt lint test build
 
