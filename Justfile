@@ -1,6 +1,6 @@
-test: pytest
-lint: ruff mypy
-fmt: ruff-fmt
+test: test-pytest
+lint: lint-ruff lint-mypy
+fmt: fmt-ruff lint-ruff-fix
 pre-publish: clean sync fmt lint test build
 
 run +args:
@@ -21,14 +21,20 @@ publish: pre-publish
 sync:
     uv sync
 
-pytest:
-    uv run pytest
+fmt-ruff:
+    uv run ruff format
 
-ruff-fmt:
-    uvx ruff format
+lint-ruff:
+    uv run ruff check
 
-ruff:
-    uvx ruff check
+lint-ruff-fix:
+    uv run ruff check --fix
 
-mypy:
+lint-pyrefly:
+    uv run pyrefly check
+
+lint-mypy:
     uv run mypy .
+
+test-pytest:
+    uv run pytest
