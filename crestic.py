@@ -12,7 +12,6 @@ import sys
 from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format="%(levelname)8s: %(message)s", level=logging.INFO)
 
 
 def config_files(environ: Optional[Dict[str, str]] = None) -> List[str]:
@@ -91,6 +90,7 @@ def main(
     conffile: Optional[List[str]] = None,
     dryrun: Optional[bool] = None,
     executable: Optional[str] = None,
+    debug: Optional[bool] = None,
 ) -> int:
     if environ is None:
         environ = os.environ
@@ -103,6 +103,14 @@ def main(
 
     if executable is None:
         executable = environ.get("CRESTIC_EXECUTABLE", "restic")
+
+    if debug is None:
+        debug = bool(environ.get("CRESTIC_DEBUG", False))
+
+    logging.basicConfig(
+        format="%(levelname)8s: %(message)s",
+        level=logging.DEBUG if debug else logging.INFO,
+    )
 
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("preset", nargs="?", type=valid_preset)
@@ -230,16 +238,17 @@ def main(
         logger.warning(
             "Executing in debug mode. restic will not run, backups are not touched!",
         )
-        logger.info("%22s: %s", "Crestic executable", sys.argv[0])
-        logger.info("%22s: %s", "Python executable", sys.executable)
-        logger.info("%22s: %s", "Config files", ", ".join(conffile))
-        logger.info("%22s: %s", "Config files used", ", ".join(conffile_read))
-        logger.info("%22s: %s", "Config sections", ", ".join(sections))
-        logger.info("%22s: %s", "Config sections used", ", ".join(sections_read))
-        logger.info("%22s: %s", "Env sections", ", ".join(envsections))
-        logger.info("%22s: %s", "Env sections used", ", ".join(envsections_read))
-        logger.info("%22s: %s", "Working directory", workdir)
+        logger.debug("%22s: %s", "Crestic executable", sys.argv[0])
+        logger.debug("%22s: %s", "Python executable", sys.executable)
+        logger.debug("%22s: %s", "Config files", ", ".join(conffile))
+        logger.debug("%22s: %s", "Config files used", ", ".join(conffile_read))
+        logger.debug("%22s: %s", "Config sections", ", ".join(sections))
+        logger.debug("%22s: %s", "Config sections used", ", ".join(sections_read))
+        logger.debug("%22s: %s", "Env sections", ", ".join(envsections))
+        logger.debug("%22s: %s", "Env sections used", ", ".join(envsections_read))
+        logger.debug("%22s: %s", "Working directory", workdir)
         logger.info("%22s: %s", "Expanded command", '"' + ('" "'.join(argstring)) + '"')
+        logger.info("Set CRESTIC_DEBUG=1 for more information.")
         return 1
     else:
         os.chdir(workdir)
