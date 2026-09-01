@@ -230,16 +230,16 @@ def main(
         logger.warning(
             "Executing in debug mode. restic will not run, backups are not touched!",
         )
-        logger.info("  Crestic executable: " + sys.argv[0])
-        logger.info("   Python executable: " + sys.executable)
-        logger.info("        Config files: " + ", ".join(conffile))
-        logger.info("   Config files used: " + ", ".join(conffile_read))
-        logger.info("     Config sections: " + ", ".join(sections))
-        logger.info("Config sections used: " + ", ".join(sections_read))
-        logger.info("        Env sections: " + ", ".join(envsections))
-        logger.info("   Env sections used: " + ", ".join(envsections_read))
-        logger.info("   Working directory: " + workdir)
-        logger.info("    Expanded command: " + '"' + ('" "'.join(argstring)) + '"')
+        logger.info("%22s: %s", "Crestic executable", sys.argv[0])
+        logger.info("%22s: %s", "Python executable", sys.executable)
+        logger.info("%22s: %s", "Config files", ", ".join(conffile))
+        logger.info("%22s: %s", "Config files used", ", ".join(conffile_read))
+        logger.info("%22s: %s", "Config sections", ", ".join(sections))
+        logger.info("%22s: %s", "Config sections used", ", ".join(sections_read))
+        logger.info("%22s: %s", "Env sections", ", ".join(envsections))
+        logger.info("%22s: %s", "Env sections used", ", ".join(envsections_read))
+        logger.info("%22s: %s", "Working directory", workdir)
+        logger.info("%22s: %s", "Expanded command", '"' + ('" "'.join(argstring)) + '"')
         return 1
     else:
         os.chdir(workdir)

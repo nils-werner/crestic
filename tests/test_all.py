@@ -244,8 +244,9 @@ def test_dryrun(mock_logger, dryrun, conffile, environ):
 
     os.execvpe.assert_not_called()
     crestic.logger.info.assert_called_with(
-        "    Expanded command: "
-        + '"restic" "backup" "--exclude-file" "bla" "/home/user"'
+        "%22s: %s",
+        "Expanded command",
+        '"restic" "backup" "--exclude-file" "bla" "/home/user"',
     )
     assert retval == 1
 
