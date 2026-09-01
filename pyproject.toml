@@ -39,6 +39,9 @@ CI = "https://app.circleci.com/pipelines/github/nils-werner/crestic"
 [project.scripts]
 crestic = "crestic:cli"
 
+[tool.uv]
+exclude-newer = "2 weeks"
+
 [tool.setuptools]
 py-modules = ["crestic"]
 include-package-data = false
