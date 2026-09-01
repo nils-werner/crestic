@@ -9,12 +9,11 @@ import logging
 import os
 import re
 import sys
-from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 
-def config_files(environ: Optional[Dict[str, str]] = None) -> List[str]:
+def config_files(environ: dict[str, str] | None = None) -> list[str]:
     if environ is None:
         environ = {}
 
@@ -47,7 +46,7 @@ def config_files(environ: Optional[Dict[str, str]] = None) -> List[str]:
     return paths
 
 
-def split(string: str, delimiter: str = "@", maxsplit: int = 1) -> List[str]:
+def split(string: str, delimiter: str = "@", maxsplit: int = 1) -> list[str]:
     """
     Split a string using a delimiter string. But keep the delimiter in all returned segments
 
@@ -71,7 +70,7 @@ def pathexpand(val: str) -> str:
     return os.path.expanduser(os.path.expandvars(val))
 
 
-def splitlines(val: str) -> List[str]:
+def splitlines(val: str) -> list[str]:
     """
     str.splitlines() that is tolerant to empty strings and None values
 
@@ -85,12 +84,12 @@ def splitlines(val: str) -> List[str]:
 
 
 def main(
-    argv: List[str],
-    environ: Optional[os._Environ] = None,
-    conffile: Optional[List[str]] = None,
-    dryrun: Optional[bool] = None,
-    executable: Optional[str] = None,
-    debug: Optional[bool] = None,
+    argv: list[str],
+    environ: os._Environ | None = None,
+    conffile: list[str] | None = None,
+    dryrun: bool | None = None,
+    executable: str | None = None,
+    debug: bool | None = None,
 ) -> int:
     if environ is None:
         environ = os.environ

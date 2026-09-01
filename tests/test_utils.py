@@ -1,5 +1,6 @@
-import pytest
 import argparse
+
+import pytest
 
 import crestic
 
