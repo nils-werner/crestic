@@ -60,8 +60,7 @@ def split(string: str, delimiter: str = "@", maxsplit: int = 1) -> list[str]:
 def valid_preset(value: str) -> str:
     if not re.match(r"^[^@]+(@[^@]+)?$", value):
         raise argparse.ArgumentTypeError(
-            "%s is an invalid preset name, only preset names in the format of name[@suffix] are allowed."
-            % value
+            f"{value} is an invalid preset name, only preset names in the format of name[@suffix] are allowed."
         )
     return value
 
@@ -249,7 +248,7 @@ def main(
         logger.info(
             "%22s: %s",
             "Expanded command",
-            " ".join(['"%s"' % arg for arg in argstring]),
+            " ".join([f'"{arg}"' for arg in argstring]),
         )
         logger.info("Set CRESTIC_DEBUG=1 for more information.")
         return 1
