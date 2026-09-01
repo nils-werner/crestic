@@ -1,0 +1,31 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install system dependencies
+        run: sudo apt install -y just
+
+      - name: Install the project
+        run: uv sync --locked --all-packages
+
+      - name: Run linter
+        run: just lint
+
+      - name: Run tests
+        run: just test
