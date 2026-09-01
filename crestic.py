@@ -247,7 +247,11 @@ def main(
         logger.debug("%22s: %s", "Env sections", ", ".join(envsections))
         logger.debug("%22s: %s", "Env sections used", ", ".join(envsections_read))
         logger.debug("%22s: %s", "Working directory", workdir)
-        logger.info("%22s: %s", "Expanded command", '"' + ('" "'.join(argstring)) + '"')
+        logger.info(
+            "%22s: %s",
+            "Expanded command",
+            " ".join(['"%s"' % arg for arg in argstring]),
+        )
         logger.info("Set CRESTIC_DEBUG=1 for more information.")
         return 1
     else:
