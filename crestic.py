@@ -139,6 +139,12 @@ def main(
     # dont map config keys to lower case
     config.optionxform = str  # type: ignore
     conffile_read = config.read(conffile)
+    if not config.sections():
+        logger.warning(
+            "%s %s",
+            "No valid config sections found in file(s):",
+            ",".join(conffile_read or conffile),
+        )
 
     sections = [
         "global",

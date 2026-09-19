@@ -63,6 +63,28 @@ def mock_parse_intermixed_args(request, monkeypatch):
     return request.param
 
 
+def test_no_config_file(mock_logger, environ):
+    missing_cfg = ["/nonexistent/crestic/config.cfg"]
+    crestic.main(["plain", "backup"], conffile=missing_cfg, environ=environ)
+
+    crestic.logger.warning.assert_any_call(
+        "%s %s",
+        "No valid config sections found in file(s):",
+        missing_cfg[0],
+    )
+
+
+def test_config_without_sections(mock_logger, environ):
+    nosections_cfg = [testroot + "/nosections.cfg"]
+    crestic.main(["plain", "backup"], conffile=nosections_cfg, environ=environ)
+
+    crestic.logger.warning.assert_any_call(
+        "%s %s",
+        "No valid config sections found in file(s):",
+        nosections_cfg[0],
+    )
+
+
 def test_plain_backup(conffile, environ):
     crestic.main(["plain", "backup"], conffile=conffile, environ=environ)
     os.execvpe.assert_called_once_with(
