@@ -39,6 +39,9 @@ CI = "https://app.circleci.com/pipelines/github/nils-werner/crestic"
 [project.scripts]
 crestic = "crestic:cli"
 
+[tool.uv]
+exclude-newer = "2 weeks"
+
 [tool.setuptools]
 py-modules = ["crestic"]
 include-package-data = false
@@ -49,7 +52,9 @@ addopts = "--doctest-modules --cov-report term-missing --cov crestic -Werror"
 [dependency-groups]
 dev = [
     "mypy>=0.971",
+    "pyrefly>=0.14.0",
     "pytest>=7.0.1",
     "pytest-cov>=4.0.0",
     "pytest-mock>=3.6.1",
+    "ruff>=0.0.17",
 ]
