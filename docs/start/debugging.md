@@ -5,14 +5,16 @@ subtitle: Getting Started
 
 ## Debugging
 
-If you set the environment variable `$CRESTIC_DRYRUN`, crestic will not run restic but instead output
+If you set the environment variable `$CRESTIC_DRYRUN`, crestic will not run restic but instead output the command.
+
+If you also set `$CRESTIC_DEBUG`, it will output
 
  - the config files in use
  - the config sections in use
  - the final command
 
 ```shell
-env CRESTIC_DRYRUN=1 crestic home backup
+env CRESTIC_DRYRUN=1 CRESTIC_DEBUG=1 crestic home backup
 ```
 
 will print

@@ -232,25 +232,33 @@ def main(
 
     argstring = [pathexpand(val) for val in argstring]
 
+    logger.debug("Executables")
+    logger.debug("%14s: %s", "crestic", sys.argv[0])
+    logger.debug("%14s: %s", "python", sys.executable)
+    logger.debug("")
+    logger.debug("Config Files")
+    logger.debug("%14s: %s", "searched", ", ".join(conffile))
+    logger.debug("%14s: %s", "found", ", ".join(conffile_read))
+    logger.debug("")
+    logger.debug("Config Sections")
+    logger.debug("%14s: %s", "searched", ", ".join(sections))
+    logger.debug("%14s: %s", "found", ", ".join(sections_read))
+    logger.debug("")
+    logger.debug("Env Sections")
+    logger.debug("%14s: %s", "searched", ", ".join(envsections))
+    logger.debug("%14s: %s", "found", ", ".join(envsections_read))
+    logger.debug("")
+    logger.debug("Command")
+    logger.debug("%14s: %s", "workdir", workdir)
+    logger.debug("%14s: %s", "expanded", " ".join([f'"{arg}"' for arg in argstring]))
+
     if dryrun:
-        logger.warning(
-            "Executing in debug mode. restic will not run, backups are not touched!",
-        )
-        logger.debug("%22s: %s", "Crestic executable", sys.argv[0])
-        logger.debug("%22s: %s", "Python executable", sys.executable)
-        logger.debug("%22s: %s", "Config files", ", ".join(conffile))
-        logger.debug("%22s: %s", "Config files used", ", ".join(conffile_read))
-        logger.debug("%22s: %s", "Config sections", ", ".join(sections))
-        logger.debug("%22s: %s", "Config sections used", ", ".join(sections_read))
-        logger.debug("%22s: %s", "Env sections", ", ".join(envsections))
-        logger.debug("%22s: %s", "Env sections used", ", ".join(envsections_read))
-        logger.debug("%22s: %s", "Working directory", workdir)
         logger.info(
-            "%22s: %s",
-            "Expanded command",
-            " ".join([f'"{arg}"' for arg in argstring]),
+            "%s: %s", "Expanded command", " ".join([f'"{arg}"' for arg in argstring])
         )
-        logger.info("Set CRESTIC_DEBUG=1 for more information.")
+        logger.warning(
+            "Executing in dry-run mode. restic will not run, backups are not touched! Set CRESTIC_DEBUG=1 for debugging information.",
+        )
         return 1
     else:
         os.chdir(workdir)
