@@ -140,10 +140,11 @@ def main(
     config.optionxform = str  # type: ignore
     conffile_read = config.read(conffile)
     if not config.sections():
-        print("crestic: no valid config sections found in file(s):", file=sys.stderr)
-        for path in conffile_read or conffile:
-            print(f"    {path}", file=sys.stderr)
-        return 1
+        logger.warning(
+            "%s %s",
+            "No valid config sections found in file(s):",
+            ",".join(conffile_read or conffile),
+        )
 
     sections = [
         "global",
